@@ -1,0 +1,93 @@
+// Theme
+
+$color-text: #000;
+$color-text-light: gray;
+$color-active: blue;
+$color-bg: #fff;
+$color-bg-dark: lightgray;
+$color-separator: gray;
+
+$shadow: 0px 1px 3px -1px $color-separator;
+
+
+// Global
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+  
+body {
+  position: relative;
+  height: 100vh;
+  font-size: calc(0.8em + 0.3vw);
+}
+
+a {
+  color: $color-text;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-active;
+  }
+}
+
+.appContainer {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-flow: row nowrap;
+  height: 100vh;
+}
+
+.navigationContainer {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-flow: column nowrap;
+  flex: .1;
+  background-color: $color-bg-dark;
+}
+
+.moduleContainer {
+  height: 100%;
+  background-color: $color-bg;
+  flex: .9;
+}
+
+.toolbar {
+  background-color: $color-text;
+  color: $color-text-light;
+
+  &__options {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 5vh;
+  }
+
+  &__button {
+    padding: .5vh 2vw;
+    cursor: pointer;
+  }
+}
+
+
+// Sorting Algorithms
+
+.sortContainer {
+  height: 100%;
+  width: 100%;
+
+  &__chart {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    height: 60%;
+    border-bottom: 1px solid $color-separator;
+  }
+}

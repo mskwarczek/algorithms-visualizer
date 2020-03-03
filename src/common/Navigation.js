@@ -1,8 +1,8 @@
 import React from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 
-import HomePage from './HomePage/HomePage';
-import SortContainer from './SortModule/SortContainer';
+import HomePage from '../HomePage/HomePage';
+import SortContainer from '../SortModule/SortContainer';
 
 const Router = () => {
   
