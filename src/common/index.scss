@@ -90,4 +90,8 @@ a {
     height: 60%;
     border-bottom: 1px solid $color-separator;
   }
+
+  &__label {
+    font-size: 0.7em;
+  }
 }
