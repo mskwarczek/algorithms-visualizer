@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import Chart from '../components/Chart';
+
 const QuickSort = ({
   data,
   updateData,
@@ -91,43 +93,38 @@ const QuickSort = ({
     return array;
   };
 
+  const generateDataBackgroundStyles = () => {
+    return data.length > 0 && data.map((elem, index) => 
+        hasStarted && states[index] === 0 && states[index + 1] === 1
+      ? 'linear-gradient(to right, red, gray)'
+      : hasStarted && states[index] === 0 && states[index + 1] === 2
+      ? 'linear-gradient(to right, red, blue)'
+      : hasStarted && states[index] === 0
+      ? 'linear-gradient(to right, red, lightgray)'
+      : hasStarted && states[index] === 1
+      ? 'linear-gradient(gray, gray)'
+      : hasStarted && states[index] === 2
+      ? 'linear-gradient(blue, blue)'
+      : hasStarted && states[index] === 3 && states[index - 1] === 1
+      ? 'linear-gradient(to left, red, gray)'
+      : hasStarted && states[index] === 3 && states[index - 1] === 2
+      ? 'linear-gradient(to left, red, blue)'
+      : hasStarted && states[index] === 3
+      ? 'linear-gradient(to left, red, lightgray)'
+      : hasStarted && states[index] === 4
+      ? 'linear-gradient(lightblue, lightblue)'
+      : 'linear-gradient(lightgray, lightgray)'
+    );
+  };
+
   return (
     <div className='sortContainer'>
-      <div className='sortContainer__chart'>
-        {data.length > 0 && data.map((elem, index) =>
-          <div
-            key={index}
-            style={{
-              height: (elem - dataParams.min) / (dataParams.max - dataParams.min) * 100 + '%',
-              width: (displayParams.chartMarigins === true ? 80 : 100) / dataParams.size + '%',
-              marginLeft: displayParams.dataMarigins === 'true' ? '1px' : '0',
-              textAlign: 'center',
-              backgroundImage:
-                hasStarted && states[index] === 0 && states[index + 1] === 1
-                  ? 'linear-gradient(to right, red, gray)'
-                  : hasStarted && states[index] === 0 && states[index + 1] === 2
-                  ? 'linear-gradient(to right, red, blue)'
-                  : hasStarted && states[index] === 0
-                  ? 'linear-gradient(to right, red, lightgray)'
-                  : hasStarted && states[index] === 1
-                  ? 'linear-gradient(gray, gray)'
-                  : hasStarted && states[index] === 2
-                  ? 'linear-gradient(blue, blue)'
-                  : hasStarted && states[index] === 3 && states[index - 1] === 1
-                  ? 'linear-gradient(to left, red, gray)'
-                  : hasStarted && states[index] === 3 && states[index - 1] === 2
-                  ? 'linear-gradient(to left, red, blue)'
-                  : hasStarted && states[index] === 3
-                  ? 'linear-gradient(to left, red, lightgray)'
-                  : hasStarted && states[index] === 4
-                  ? 'linear-gradient(lightblue, lightblue)'
-                  : 'linear-gradient(lightgray, lightgray)',
-            }}
-          >
-            {displayParams.dataLabels === 'true' && <p className='sortContainer__label'>{elem}</p>}
-          </div>
-        )}
-      </div>
+      <Chart
+        data={data}
+        dataParams={dataParams}
+        displayParams={displayParams}
+        dataBackground={{ type: 'backgroundImage', values: generateDataBackgroundStyles() }}
+      />
     </div>
   );
 };

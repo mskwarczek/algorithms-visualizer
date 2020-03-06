@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import Chart from '../components/Chart';
+
 const BubbleSort = ({
   data,
   updateData,
@@ -56,33 +58,28 @@ const BubbleSort = ({
     updateIteration(iteration => { return { i: iteration.i - 1, j: 0 }});
   };
 
+  const generateDataBackgroundStyles = () => {
+    return data.length > 0 && data.map((elem, index) => 
+        iteration.i !== null && index === iteration.i
+      ? 'red' 
+      : iteration.j !== null  && (index === iteration.j || index === iteration.j + 1) && data[iteration.j] > data[iteration.j + 1]
+      ? 'blue'
+      : iteration.j !== null  && (index === iteration.j || index === iteration.j + 1)
+      ? 'gray'
+      : iteration.i !== null  && index > iteration.i
+      ? 'lightblue'
+      : 'lightgray'
+    );
+  };
+
   return (
     <div className='sortContainer'>
-      <div className='sortContainer__chart'>
-        {data.length > 0 && data.map((elem, index) => 
-          <div
-            key={index}
-            style={{
-              height: (elem - dataParams.min) / (dataParams.max - dataParams.min) * 100 + '%',
-              width: (displayParams.chartMarigins === true ? 80 : 100) / dataParams.size + '%',
-              marginLeft: displayParams.dataMarigins === 'true' ? '1px' : '0',
-              textAlign: 'center',
-              backgroundColor: 
-                iteration.i !== null && index === iteration.i
-                  ? 'red' 
-                  : iteration.j !== null  && (index === iteration.j || index === iteration.j + 1) && data[iteration.j] > data[iteration.j + 1]
-                    ? 'blue'
-                    : iteration.j !== null  && (index === iteration.j || index === iteration.j + 1)
-                      ? 'gray'
-                      : iteration.i !== null  && index > iteration.i
-                        ? 'lightblue'
-                        : 'lightgray',
-            }}
-          >
-            {displayParams.dataLabels === 'true' && <p className='sortContainer__label'>{elem}</p>}
-          </div>
-        )}
-      </div>
+      <Chart
+        data={data}
+        dataParams={dataParams}
+        displayParams={displayParams}
+        dataBackground={{ type: 'backgroundColor', values: generateDataBackgroundStyles() }}
+      />
     </div>
   );
 };

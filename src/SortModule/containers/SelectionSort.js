@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+import Chart from '../components/Chart';
+
 const SelectionSort = ({
   data,
   updateData,
@@ -62,33 +64,28 @@ const SelectionSort = ({
     updateIteration(iteration => { return { i: iteration.i + 1, j: iteration.i + 2 }});
   };
 
+  const generateDataBackgroundStyles = () => {
+    return data.length > 0 && data.map((elem, index) => 
+        index === iteration.i
+      ? 'red' 
+      : index === iteration.j
+      ? 'gray'
+      : index === min.current
+      ? 'blue'
+      : index > iteration.i - 1
+      ? 'lightgray'
+      : 'lightblue'
+    );
+  };
+
   return (
     <div className='sortContainer'>
-      <div className='sortContainer__chart'>
-        {data.length > 0 && data.map((elem, index) => 
-          <div
-            key={index}
-            style={{
-              height: (elem - dataParams.min) / (dataParams.max - dataParams.min) * 100 + '%',
-              width: (displayParams.chartMarigins === true ? 80 : 100) / dataParams.size + '%',
-              marginLeft: displayParams.dataMarigins === 'true' ? '1px' : '0',
-              textAlign: 'center',
-              backgroundColor: 
-                index === iteration.i
-                  ? 'red' 
-                  : index === iteration.j
-                    ? 'gray'
-                    : index === min.current
-                      ? 'blue'
-                      : index > iteration.i - 1
-                        ? 'lightgray'
-                        : 'lightblue',
-            }}
-          >
-            {displayParams.dataLabels === 'true' && <p className='sortContainer__label'>{elem}</p>}
-          </div>
-        )}
-      </div>
+      <Chart
+        data={data}
+        dataParams={dataParams}
+        displayParams={displayParams}
+        dataBackground={{ type: 'backgroundColor', values: generateDataBackgroundStyles() }}
+      />
     </div>
   );
 };
