@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Toolbar from '../common/Toolbar';
 import SelectionSort from './containers/SelectionSort';
 import BubbleSort from './containers/BubbleSort';
+import QuickSort from './containers/QuickSort';
 
 const SortContainer = () => {
 
@@ -59,6 +60,15 @@ const SortContainer = () => {
           hasFinished={hasFinished}
           finish={finish}
         />
+      case 'quickSort':
+        return <QuickSort
+          data={data}
+          updateData={updateData}
+          dataParams={dataParams}
+          sortParams={sortParams}
+          hasStarted={hasStarted}
+          finish={finish}
+        />
       default: return <div />
     };
   };
@@ -73,6 +83,7 @@ const SortContainer = () => {
         <select value={sortParams.type} onChange={(event) => setSortParams({ ...sortParams, type: event.target.value })}>
           <option value='selectionSort'>Selection sort</option>
           <option value="bubbleSort">Bubble sort</option>
+          <option value="quickSort">Quick sort</option>
         </select>
         {hasFinished && <p onClick={resetChart}>Reset chart</p>}
       </Toolbar>
