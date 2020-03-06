@@ -5,6 +5,7 @@ const BubbleSort = ({
   updateData,
   dataParams,
   sortParams,
+  displayParams,
   hasStarted,
   hasFinished,
   finish,
@@ -17,13 +18,13 @@ const BubbleSort = ({
       updateIteration({ i: data.length - 1, j: 0 });
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasStarted])
+  }, [hasStarted]);
 
   useEffect(() => {
     if (hasStarted) {
       let intervalID = null;
       if (iteration.i > 0) {
-        intervalID = setTimeout(() => bubbleSort(), 10);
+        intervalID = setTimeout(() => bubbleSort(), sortParams.interval);
       } else {
         clearTimeout(intervalID);
         finish(true);
@@ -31,13 +32,13 @@ const BubbleSort = ({
       return () => clearTimeout(intervalID);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iteration])
+  }, [iteration]);
 
   useEffect(() => {
     if (hasFinished) {
       updateIteration({ i: null, j: null });
     };
-  }, [hasFinished])
+  }, [hasFinished]);
 
   const bubbleSort = () => {
     if (iteration.j < iteration.i) {
@@ -63,8 +64,8 @@ const BubbleSort = ({
             key={index}
             style={{
               height: (elem - dataParams.min) / (dataParams.max - dataParams.min) * 100 + '%',
-              width: 80 / dataParams.size + '%',
-              margin: '1px',
+              width: (displayParams.chartMarigins === true ? 80 : 100) / dataParams.size + '%',
+              marginLeft: displayParams.dataMarigins === 'true' ? '1px' : '0',
               textAlign: 'center',
               backgroundColor: 
                 iteration.i !== null && index === iteration.i
@@ -78,7 +79,7 @@ const BubbleSort = ({
                         : 'lightgray',
             }}
           >
-            <p className='sortContainer__label'>{elem}</p>
+            {displayParams.dataLabels === 'true' && <p className='sortContainer__label'>{elem}</p>}
           </div>
         )}
       </div>

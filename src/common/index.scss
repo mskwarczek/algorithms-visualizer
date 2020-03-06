@@ -67,11 +67,11 @@ a {
     flex-flow: row nowrap;
     justify-content: space-evenly;
     align-items: center;
-    height: 5vh;
+    height: 10vh;
   }
 
   &__button {
-    padding: .5vh 2vw;
+    padding: .5vh 0.5vw;
     cursor: pointer;
   }
 }

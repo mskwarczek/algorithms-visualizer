@@ -5,6 +5,7 @@ const SelectionSort = ({
   updateData,
   dataParams,
   sortParams,
+  displayParams,
   hasStarted,
   hasFinished,
   finish,
@@ -17,13 +18,13 @@ const SelectionSort = ({
     if (hasStarted) {
       updateIteration({ i: 0, j: 1 });
     };
-  }, [hasStarted])
+  }, [hasStarted]);
 
   useEffect(() => {
     if (hasStarted) {
       let intervalID = null;
       if (iteration.i < data.length) {
-        intervalID = setTimeout(() => selectionSort(), 10);
+        intervalID = setTimeout(() => selectionSort(), sortParams.interval);
       } else {
         clearTimeout(intervalID);
         finish(true);
@@ -31,14 +32,14 @@ const SelectionSort = ({
       return () => clearTimeout(intervalID);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iteration])
+  }, [iteration]);
 
   useEffect(() => {
     if (hasFinished) {
       min.current = null;
       updateIteration({ i: null, j: null });
     };
-  }, [hasFinished])
+  }, [hasFinished]);
 
   const selectionSort = () => {
     if (!min.current) {
@@ -69,8 +70,8 @@ const SelectionSort = ({
             key={index}
             style={{
               height: (elem - dataParams.min) / (dataParams.max - dataParams.min) * 100 + '%',
-              width: 80 / dataParams.size + '%',
-              margin: '1px',
+              width: (displayParams.chartMarigins === true ? 80 : 100) / dataParams.size + '%',
+              marginLeft: displayParams.dataMarigins === 'true' ? '1px' : '0',
               textAlign: 'center',
               backgroundColor: 
                 index === iteration.i
@@ -84,7 +85,7 @@ const SelectionSort = ({
                         : 'lightblue',
             }}
           >
-            <p className='sortContainer__label'>{elem}</p>
+            {displayParams.dataLabels === 'true' && <p className='sortContainer__label'>{elem}</p>}
           </div>
         )}
       </div>
