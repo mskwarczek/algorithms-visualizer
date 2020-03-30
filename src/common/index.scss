@@ -76,16 +76,41 @@ body {
   color: $color-text-light;
   height: 20vh;
 
-  &__options {
+  h2 {
+    padding-left: 2vw;
+    color: $color-cta;
+  }
+
+  &__box {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-evenly;
     align-items: center;
+    border-top: 1px solid $color-separator;
+
+    &.main {
+      padding: 2vh 0;
+    }
   }
 
   &__button {
     padding: .5vh 0.5vw;
     cursor: pointer;
+    text-align: center;
+
+    &:hover {
+      color: $color-cta;
+    }
+  }
+
+  .callToAction {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: $color-cta;
+
+    &:hover {
+      color: $color-active;
+    }
   }
 }
 
