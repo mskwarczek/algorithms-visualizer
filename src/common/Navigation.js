@@ -10,7 +10,7 @@ const Router = () => {
     <div className='appContainer'>
       <div className='navigationContainer'>
         <Link to='/'>Algorithms Visualizer</Link>
-        <Link to='/sort'>Sort</Link>
+        <Link to='/sort'>Sorting Algorithms</Link>
       </div>
       <Switch >
         <Route exact path='/' component={HomePage} />

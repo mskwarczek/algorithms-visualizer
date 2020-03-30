@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { colours } from '../helpers';
 import Chart from '../components/Chart';
 
 const QuickSort = ({
@@ -96,24 +97,24 @@ const QuickSort = ({
   const generateDataBackgroundStyles = () => {
     return data.length > 0 && data.map((elem, index) => 
         hasStarted && states[index] === 0 && states[index + 1] === 1
-      ? 'linear-gradient(to right, red, gray)'
+      ? `linear-gradient(to right, ${colours.pivot}, ${colours.current})`
       : hasStarted && states[index] === 0 && states[index + 1] === 2
-      ? 'linear-gradient(to right, red, blue)'
+      ? `linear-gradient(to right, ${colours.pivot}, ${colours.active})`
       : hasStarted && states[index] === 0
-      ? 'linear-gradient(to right, red, lightgray)'
+      ? `linear-gradient(to right, ${colours.pivot}, ${colours.unsorted})`
       : hasStarted && states[index] === 1
-      ? 'linear-gradient(gray, gray)'
+      ? `linear-gradient(${colours.current}, ${colours.current})`
       : hasStarted && states[index] === 2
-      ? 'linear-gradient(blue, blue)'
+      ? `linear-gradient(${colours.active}, ${colours.active})`
       : hasStarted && states[index] === 3 && states[index - 1] === 1
-      ? 'linear-gradient(to left, red, gray)'
+      ? `linear-gradient(to left, ${colours.pivot}, ${colours.active})`
       : hasStarted && states[index] === 3 && states[index - 1] === 2
-      ? 'linear-gradient(to left, red, blue)'
+      ? `linear-gradient(to left, ${colours.pivot}, ${colours.active})`
       : hasStarted && states[index] === 3
-      ? 'linear-gradient(to left, red, lightgray)'
+      ? `linear-gradient(to left, ${colours.pivot}, ${colours.unsorted})`
       : hasStarted && states[index] === 4
-      ? 'linear-gradient(lightblue, lightblue)'
-      : 'linear-gradient(lightgray, lightgray)'
+      ? `linear-gradient(${colours.sorted}, ${colours.sorted})`
+      : `linear-gradient(${colours.unsorted}, ${colours.unsorted})`
     );
   };
 

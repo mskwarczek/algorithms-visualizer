@@ -14,7 +14,7 @@ const Chart = ({
           key={index}
           style={{
             height: (elem - dataParams.min) / (dataParams.max - dataParams.min) * 100 + '%',
-            width: (displayParams.chartMarigins === true ? 80 : 100) / dataParams.size + '%',
+            width: (displayParams.chartMarigins === true ? 80 : 95) / dataParams.size + '%',
             marginLeft: displayParams.dataMarigins === 'true' ? '1px' : '0',
             textAlign: 'center',
             [dataBackground.type]: dataBackground.values[index],

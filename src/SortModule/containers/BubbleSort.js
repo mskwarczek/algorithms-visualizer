@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { colours } from '../helpers';
 import Chart from '../components/Chart';
 
 const BubbleSort = ({
@@ -61,14 +62,14 @@ const BubbleSort = ({
   const generateDataBackgroundStyles = () => {
     return data.length > 0 && data.map((elem, index) => 
         iteration.i !== null && index === iteration.i
-      ? 'red' 
+      ? colours.pivot
       : iteration.j !== null  && (index === iteration.j || index === iteration.j + 1) && data[iteration.j] > data[iteration.j + 1]
-      ? 'blue'
+      ? colours.active
       : iteration.j !== null  && (index === iteration.j || index === iteration.j + 1)
-      ? 'gray'
+      ? colours.current
       : iteration.i !== null  && index > iteration.i
-      ? 'lightblue'
-      : 'lightgray'
+      ? colours.sorted
+      : colours.unsorted
     );
   };
 

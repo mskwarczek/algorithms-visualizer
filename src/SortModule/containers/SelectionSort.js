@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+import { colours } from '../helpers';
 import Chart from '../components/Chart';
 
 const SelectionSort = ({
@@ -67,14 +68,14 @@ const SelectionSort = ({
   const generateDataBackgroundStyles = () => {
     return data.length > 0 && data.map((elem, index) => 
         index === iteration.i
-      ? 'red' 
+      ? colours.pivot
       : index === iteration.j
-      ? 'gray'
+      ? colours.current
       : index === min.current
-      ? 'blue'
+      ? colours.active
       : index > iteration.i - 1
-      ? 'lightgray'
-      : 'lightblue'
+      ? colours.unsorted
+      : colours.sorted
     );
   };
 
