@@ -46,8 +46,10 @@ body {
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
           flex-flow: column nowrap;
-  flex: .1;
-  align-items: center;
+  -webkit-box-flex: .1;
+          flex: .1;
+  -webkit-box-align: center;
+          align-items: center;
   text-align: center;
   background-color: $color-bg-dark;
   padding: 0 .5vw;
@@ -68,7 +70,8 @@ body {
 .moduleContainer {
   height: 100%;
   background-color: $color-bg;
-  flex: .9;
+  -webkit-box-flex: .9;
+          flex: .9;
 }
 
 .toolbar {
@@ -79,18 +82,21 @@ body {
   h2 {
     padding-left: 2vw;
     color: $color-cta;
+    line-height: 4vh;
   }
 
   &__box {
+    display: -webkit-box;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-    align-items: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+            flex-flow: row nowrap;
+    -webkit-box-pack: space-evenly;
+            justify-content: space-evenly;
+    -webkit-box-align: center;
+            align-items: center;
     border-top: 1px solid $color-separator;
-
-    &.main {
-      padding: 2vh 0;
-    }
+    height: 8vh;
   }
 
   &__button {
@@ -112,8 +118,50 @@ body {
       color: $color-active;
     }
   }
+
+  .checkboxContainer {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+            flex-flow: row nowrap;
+    -webkit-box-align: center;
+            align-items: center;
+  }
 }
 
+
+// Home Page
+
+.homePage {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-flow: column nowrap;
+  -webkit-box-align: center;
+          align-items: center;
+  text-align: center;
+  padding-top: 10vh;
+
+  :nth-child(n) {
+    margin: 5vh 0;
+  }
+
+  h1 {
+    color: $color-active;
+  }
+
+  a {
+    color: $color-cta;
+    text-decoration: none;
+    font-size: 1.5em;
+
+    &:hover {
+      color: $color-active;
+    }
+  }
+}
 
 // Sorting Algorithms
 
@@ -122,9 +170,13 @@ body {
   width: 100%;
 
   &__chart {
+    display: -webkit-box;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+            flex-flow: row nowrap;
+    -webkit-box-pack: center;
+            justify-content: center;
     height: 60%;
     border-bottom: 1px solid $color-separator;
   }

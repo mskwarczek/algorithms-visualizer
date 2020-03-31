@@ -5,7 +5,7 @@ const Toolbar = ({ title, box_1, box_2 }) => {
   return (
     <div className='toolbar'>
       <h2>{title}</h2>
-      <div className='toolbar__box main'>
+      <div className='toolbar__box'>
         {box_1.map((elem, index) => 
           <div
             key={`1_${index}`}
