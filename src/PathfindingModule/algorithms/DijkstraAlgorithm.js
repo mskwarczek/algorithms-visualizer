@@ -12,7 +12,7 @@ const DijkstraAlgorithm = async (
     while (!!unvisitedNodes.length) {
       sortNodesByDistance(unvisitedNodes);
       const closestNode = unvisitedNodes.shift();
-      if (closestNode.isWall) continue;
+      if (closestNode.type === 'wall') continue;
       if (closestNode.distance === Infinity) return visitedNodesInOrder;
       closestNode.isVisited = true;
       visitedNodesInOrder.push(closestNode);
@@ -67,7 +67,7 @@ const DijkstraAlgorithm = async (
     const visitedNodesInOrder = dijkstra();
     const nodesInShortestPathOrder = getNodesInShortestPathOrder();
     await visualizeStepsOnGrid(visitedNodesInOrder, 'visited');
-    await visualizeStepsOnGrid(nodesInShortestPathOrder, 'shortestPath');
+    await visualizeStepsOnGrid(nodesInShortestPathOrder, 'shortestPath', .1);
   };
 
   await visualizeDijkstra();

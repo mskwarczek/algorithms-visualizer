@@ -201,10 +201,15 @@ body {
     border-right: 1px solid royalblue;
     text-align: center;
     font-weight: bold;
+    user-select: none;
   
     &--start,
     &--finish {
       background-color: royalblue;
+    }
+
+    &--wall {
+      background-color: black;
     }
   
     &--active {

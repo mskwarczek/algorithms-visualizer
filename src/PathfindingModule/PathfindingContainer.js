@@ -6,18 +6,24 @@ import DijkstraAlgorithm from './algorithms/DijkstraAlgorithm';
 
 const PathfinidingContainer = () => {
 
-  const NODE_SIZE_DIVIDER = 60;
+  const NODE_SIZE_DIVIDER = 50;
 
   const initialAlgorithmParams = {
     type: 'dijkstra',
     interval: 5,
   };
 
+  const initialGridParams = {
+    paintMode: 'wall',
+  };
+
   const [ grid, updateGrid ] = useState([]);
-  const [ gridParams, setGridParams ] = useState({});
+  const [ gridParams, setGridParams ] = useState(initialGridParams);
   const [ algorithmParams, setAlgorithmParams ] = useState(initialAlgorithmParams);
   const [ hasStarted, start ] = useState(false);
   const [ hasFinished, finish ] = useState(false);
+  const [ isMousePressed, mousePressed ] = useState(false);
+  const [ walls, updateWalls ] = useState([]);
 
   const gridContainerRef = useRef();
   const nodesRef = useRef([]);
@@ -36,6 +42,7 @@ const PathfinidingContainer = () => {
         y: Math.floor(axisY / 2),
       };
       setGridParams({
+        ...gridParams,
         nodeSize,
         axisX,
         axisY,
@@ -59,7 +66,6 @@ const PathfinidingContainer = () => {
           distance: Infinity,
           isVisited: false,
           previousNode: null,
-          isWall: false,
         });
       };
     };
@@ -81,15 +87,66 @@ const PathfinidingContainer = () => {
             id={`node-x${node.x}-y${node.y}`}
             forwardRef={el => nodesRef.current[`node-x${node.x}-y${node.y}`] = el}
             size={gridParams.nodeSize}
+            position={{ x: node.x, y: node.y }}
             type={node.type}
+            mouseDown={handleMouseDown}
+            mouseEnter={handleMouseEnter}
+            mouseUp={handleMouseUp}
         />)}
       </div>
     );
   };
 
+  const paintStart = node => {
+    if (!(node.x === gridParams.startNode.x && node.y === gridParams.startNode.y) &&
+      !(node.x === gridParams.finishNode.x && node.y === gridParams.finishNode.y)) {
+      nodesRef.current[`node-x${node.x}-y${node.y}`].classList.toggle(`node--${gridParams.paintMode}`);
+      if (walls.some(wall => wall.x === node.x && wall.y === node.y)) {
+        const filteredWalls = walls.filter(wall => !(wall.x === node.x && wall.y === node.y))
+        updateWalls(filteredWalls);
+      } else {
+        updateWalls([ ...walls, node ]);
+      };
+    };
+  };
+
+  const handleMouseDown = node => {
+    if (!hasStarted) {
+      paintStart(node);
+      mousePressed(true);
+    };
+  };
+
+  const handleMouseEnter = node => {
+    if (isMousePressed && !hasStarted) paintStart(node);
+  };
+
+  const handleMouseUp = () => {
+    if (walls.length > 0 && !hasStarted) {
+      const newGrid = [ ...grid ];
+      walls.forEach(wall => {
+        const targetNode = grid[wall.y][wall.x];
+        const newWall = {
+          ...targetNode,
+          type: 
+            !targetNode.type
+              ? gridParams.paintMode
+              : targetNode.type === gridParams.paintMode
+              ? null
+              : targetNode.type
+            };
+        newGrid[wall.y][wall.x] = newWall;
+      });
+      updateWalls([]);
+      updateGrid(newGrid);
+    };
+    mousePressed(false);
+  };
+
   const reset = () => {
     const { axisX, axisY, startNode, finishNode } = gridParams;
-    // generateGrid(axisX, axisY, startNode, finishNode);
+    updateWalls([]);
+    generateGrid(axisX, axisY, startNode, finishNode);
     for (const node in nodesRef.current) {
       nodesRef.current[node].className = 'node';
     };
@@ -109,18 +166,13 @@ const PathfinidingContainer = () => {
     );
   };
 
-  const step = ms => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  };
-
-  const visualizeStepsOnGrid = async (source, type) => {
+  const visualizeStepsOnGrid = async (source, type, speedMod = 1) => {
     for (let i = 0; i < source.length; i++) {
       const currentNode = source[i];
       nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.add('node--active');
-      await step(algorithmParams.interval);
+      await new Promise(resolve => setTimeout(resolve, algorithmParams.interval / speedMod));
       nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.remove('node--active');
       nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.add(`node--${type}`);
-      await step(algorithmParams.interval);
     };
   };
 
@@ -157,6 +209,20 @@ const PathfinidingContainer = () => {
                 <option value={5}>Fast</option>
               </select>
             </div>,
+          ]
+        }
+        box_2={
+          [
+            <div>
+            <label>Paint mode: </label>
+            <select
+              value={gridParams.paintMode}
+              onChange={event => setGridParams({ ...gridParams, paintMode: event.target.value })}
+              disabled={hasStarted}
+            >
+              <option value='wall'>Walls</option>
+            </select>
+          </div>,
           ]
         }
       />
