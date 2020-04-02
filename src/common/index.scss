@@ -163,6 +163,7 @@ body {
   }
 }
 
+
 // Sorting Algorithms
 
 .sortContainer {
@@ -183,5 +184,39 @@ body {
 
   &__label {
     font-size: 0.7em;
+  }
+}
+
+
+// Pathfinding algorithms
+
+.gridContainer {
+  width: 100%;
+  height: 80vh;
+  border-top: 1px solid royalblue;
+  border-left: 1px solid royalblue;
+
+  .node {
+    border-bottom: 1px solid royalblue;
+    border-right: 1px solid royalblue;
+    text-align: center;
+    font-weight: bold;
+  
+    &--start,
+    &--finish {
+      background-color: royalblue;
+    }
+  
+    &--active {
+      background-color: midnightblue;
+    }
+  
+    &--visited {
+      background-color: lightskyblue;
+    }
+  
+    &--shortestPath {
+      background-color: orangered;
+    }
   }
 }

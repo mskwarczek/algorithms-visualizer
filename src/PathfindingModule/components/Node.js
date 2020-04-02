@@ -1,20 +1,30 @@
 import React from 'react';
 
-const Node = ({ type }) => {
+const Node = ({
+  id,
+  type,
+  size,
+  forwardRef,
+}) => {
 
   return (
     <div
+      id={id}
+      ref={forwardRef}
+      className={
+        type === 'start'
+          ? 'node node--start'
+          : type === 'finish'
+          ? 'node node--finish'
+          : 'node'
+      }
       style={{
-        width: '20px',
-        height: '20px',
-        borderBottom: '1px solid black',
-        borderRight: '1px solid black',
+        width: `${size}px`,
+        height: `${size}px`,
       }}
     >
-      { type === 'start' ? <p>S</p>
-        : type === 'finish' ? <p>F</p>
-        : type === 'visited' ? <p>**</p>
-        : type === 'shortestPath' ? <p>X</p>
+      { type === 'start' ? <p>></p>
+        : type === 'finish' ? <p>X</p>
         : null
       }
     </div>
