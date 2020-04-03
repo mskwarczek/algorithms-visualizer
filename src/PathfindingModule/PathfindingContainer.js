@@ -26,8 +26,9 @@ const PathfinidingContainer = () => {
 
   const gridContainerRef = useRef();
   const nodesRef = useRef([]);
+  const wallsArray = useRef([]);
 
-  let tempWallArray = [];
+  let tempWallsArray = [];
   let isMousePressed = false;
 
   useLayoutEffect(() => {
@@ -112,15 +113,21 @@ const PathfinidingContainer = () => {
     return gridCopy;
   };
 
-  const paintStart = node => {
+  const paintFromSource = (source, type) => {
+    source.forEach(node => {
+      nodesRef.current[`node-x${node.x}-y${node.y}`].classList.toggle(`node--${type}`);
+    });
+  };
+
+  const paintWithMouse = node => {
     if (!(node.x === gridParams.startNode.x && node.y === gridParams.startNode.y) &&
       !(node.x === gridParams.finishNode.x && node.y === gridParams.finishNode.y)) {
       nodesRef.current[`node-x${node.x}-y${node.y}`].classList.toggle(`node--${gridParams.paintMode}`);
-      if (tempWallArray.some(wall => wall.x === node.x && wall.y === node.y)) {
-        const filteredWalls = tempWallArray.filter(wall => !(wall.x === node.x && wall.y === node.y))
-        tempWallArray = filteredWalls;
+      if (tempWallsArray.some(wall => wall.x === node.x && wall.y === node.y)) {
+        const filteredWalls = tempWallsArray.filter(wall => !(wall.x === node.x && wall.y === node.y));
+        tempWallsArray = filteredWalls;
       } else {
-        tempWallArray.push(node);
+        tempWallsArray.push(node);
       };
     };
   };
@@ -128,40 +135,54 @@ const PathfinidingContainer = () => {
   const handleMouseDown = node => {
     if (!hasStarted) {
       isMousePressed = true;
-      paintStart(node);
+      paintWithMouse(node);
     };
   };
 
   const handleMouseEnter = node => {
-    if (isMousePressed && !hasStarted) paintStart(node);
+    if (isMousePressed && !hasStarted) paintWithMouse(node);
   };
 
   const handleMouseUp = () => {
-    if (tempWallArray.length > 0 && !hasStarted) {
-      const newGrid = copyGrid();
-      tempWallArray.forEach(wall => {
-        const targetNode = grid[wall.y][wall.x];
-        const newWall = {
-          ...targetNode,
-          type: 
-            !targetNode.type
-              ? gridParams.paintMode
-              : targetNode.type === gridParams.paintMode
-              ? null
-              : targetNode.type
-            };
-        newGrid[wall.y][wall.x] = newWall;
-      });
-      tempWallArray = [];
-      updateGrid(newGrid);
+    if (tempWallsArray.length > 0 && !hasStarted) {
+      addWallsToGrid(tempWallsArray);
+      tempWallsArray = [];
     };
     isMousePressed = false;
   };
 
-  const reset = () => {
+  const addWallsToGrid = (newWalls, type) => {
+    const paintType = type
+      ? type
+      : gridParams.paintMode;
+    const newGrid = copyGrid();
+    newWalls.forEach(wall => {
+      const targetNode = grid[wall.y][wall.x];
+      const newWall = {
+        ...targetNode,
+        type: 
+          !targetNode.type
+            ? paintType
+            : targetNode.type === paintType
+            ? null
+            : targetNode.type
+          };
+      newGrid[wall.y][wall.x] = newWall;
+    });
+    updateGrid(newGrid);
+  };
+
+  const reset = type => {
+    if (type === 'path') {
+      wallsArray.current = [];
+      grid.forEach(axisY => {
+        axisY.forEach(node => {
+          if (node.type === 'wall') wallsArray.current.push({ x: node.x, y: node.y });
+        });
+      });
+    };
     const { axisX, axisY, startNode, finishNode } = gridParams;
     generateGrid(axisX, axisY, startNode, finishNode);
-    tempWallArray = [];
     for (const node in nodesRef.current) {
       nodesRef.current[node].className = 'node';
     };
@@ -169,6 +190,10 @@ const PathfinidingContainer = () => {
     nodesRef.current[`node-x${finishNode.x}-y${finishNode.y}`].classList.add('node--finish');
     start(false);
     finish(false);
+    if (type === 'path' && wallsArray.current.length > 0) {
+      addWallsToGrid(wallsArray.current, type);
+      paintFromSource(wallsArray.current, 'wall');
+    };
   };
 
   const runAlgorithm = () => {
@@ -244,15 +269,16 @@ const PathfinidingContainer = () => {
         box_2={
           [
             <div>
-            <label>Paint mode: </label>
-            <select
-              value={gridParams.paintMode}
-              onChange={event => setGridParams({ ...gridParams, paintMode: event.target.value })}
-              disabled={hasStarted}
-            >
-              <option value='wall'>Walls</option>
-            </select>
-          </div>,
+              <label>Paint mode: </label>
+              <select
+                value={gridParams.paintMode}
+                onChange={event => setGridParams({ ...gridParams, paintMode: event.target.value })}
+                disabled={hasStarted}
+              >
+                <option value='wall'>Walls</option>
+              </select>
+            </div>,
+            hasFinished && <p onClick={() => reset('path')}>Reset path</p>,
           ]
         }
       />

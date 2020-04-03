@@ -1,3 +1,10 @@
+import {
+  getManhattanDistance,
+  sortNodesByCombinedDistance,
+  getUnvisitedNeighbours,
+  getNodesInPathOrder
+} from './common';
+
 const AStarAlgorithm = async (
   grid,
   startPosition,
@@ -8,11 +15,11 @@ const AStarAlgorithm = async (
 
   const finishNode = grid[finishPosition.y][finishPosition.x];
   const startNode = grid[startPosition.y][startPosition.x];
-  const visitedNodesInOrder = [];
-  const unvisitedNodes = []
 
   const aStar = () => {
-    startNode.heuristicDistance = getManhattanDistance(startNode);
+    const visitedNodesInOrder = [];
+    const unvisitedNodes = [];
+    startNode.heuristicDistance = getManhattanDistance(startNode, finishNode);
     unvisitedNodes.push(startNode);
     while (!!unvisitedNodes.length) {
       sortNodesByCombinedDistance(unvisitedNodes);
@@ -27,24 +34,10 @@ const AStarAlgorithm = async (
     };
   };
 
-  const getManhattanDistance = node => {
-    return Math.abs(finishPosition.x - node.x) + Math.abs(finishPosition.y - node.y);
-  };
-
-  const sortNodesByCombinedDistance = array => {
-      array.sort((nodeA, nodeB) => {
-      const result = (nodeA.distance + nodeA.heuristicDistance) - (nodeB.distance + nodeB.heuristicDistance);
-      if (result !== 0) return result;
-      return nodeA.heuristicDistance > nodeB.heuristicDistance
-        ? 1
-        : -1;
-      });
-  };
-
   const updateUnvisitedNeighbours = node => {
-    const unvisitedNeighbours = getUnvisitedNeighbours(node);
+    const unvisitedNeighbours = getUnvisitedNeighbours(grid, node);
     unvisitedNeighbours.forEach(neighbour => {
-      neighbour.heuristicDistance = getManhattanDistance(neighbour);
+      neighbour.heuristicDistance = getManhattanDistance(neighbour, finishNode);
       if (node.previousNode !== null) {
         if (node.distance + 1 < neighbour.distance) {
           neighbour.distance = node.distance + 1;
@@ -56,25 +49,6 @@ const AStarAlgorithm = async (
       };
     });
     return unvisitedNeighbours;
-  };
-
-  function getUnvisitedNeighbours(node) {
-    const neighbours = [];
-    const { x, y } = node;
-    if (y > 0) neighbours.push(grid[y - 1][x]);
-    if (y < grid.length - 1) neighbours.push(grid[y + 1][x]);
-    if (x > 0) neighbours.push(grid[y][x - 1]);
-    if (x < grid[0].length - 1) neighbours.push(grid[y][x + 1]);
-    return neighbours.filter(neighbour => !neighbour.isVisited);
-  };
-
-  const getNodesInPathOrder = node => {
-    const nodesInPathOrder = [];
-    while (node !== null) {
-      nodesInPathOrder.unshift(node);
-      node = node.previousNode;
-    };
-    return nodesInPathOrder;
   };
 
   const visualizeAStar = async () => {

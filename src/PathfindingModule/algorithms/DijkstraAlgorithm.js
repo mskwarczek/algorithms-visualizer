@@ -1,3 +1,9 @@
+import {
+  sortNodesByDistance,
+  getUnvisitedNeighbours,
+  getNodesInPathOrder,
+} from './common'
+
 const DijkstraAlgorithm = async (
   grid,
   finishPosition,
@@ -5,22 +11,23 @@ const DijkstraAlgorithm = async (
   visualizeStepsOnGrid,
 ) => {
 
+  const finishNode = grid[finishPosition.y][finishPosition.x];
+
   const dijkstra = () => {
-    const finishNode = grid[finishPosition.y][finishPosition.x];
     const visitedNodesInOrder = [];
     const unvisitedNodes = getAllNodes();
     while (!!unvisitedNodes.length) {
       sortNodesByDistance(unvisitedNodes);
-      const closestNode = unvisitedNodes.shift();
-      if (closestNode.type === 'wall') continue;
-      if (closestNode.distance === Infinity) return visitedNodesInOrder;
-      closestNode.isVisited = true;
-      visitedNodesInOrder.push(closestNode);
-      if (closestNode === finishNode) return visitedNodesInOrder;
-      updateUnvisitedNeighbours(closestNode);
+      const currentNode = unvisitedNodes.shift();
+      if (currentNode.type === 'wall') continue;
+      if (currentNode.distance === Infinity) return visitedNodesInOrder;
+      currentNode.isVisited = true;
+      visitedNodesInOrder.push(currentNode);
+      if (currentNode === finishNode) return visitedNodesInOrder;
+      updateUnvisitedNeighbours(currentNode);
     };
   };
-
+  
   const getAllNodes = () => {
     const nodes = [];
     grid.forEach(axisY => 
@@ -31,43 +38,19 @@ const DijkstraAlgorithm = async (
     return nodes;
   };
 
-  const sortNodesByDistance = unvisitedNodes => {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-  };
-
   const updateUnvisitedNeighbours = node => {
-    const unvisitedNeighbours = getUnvisitedNeighbours(node);
+    const unvisitedNeighbours = getUnvisitedNeighbours(grid, node);
     unvisitedNeighbours.forEach(neighbour => {
       neighbour.distance = node.distance + 1;
       neighbour.previousNode = node;
     });
   };
 
-  function getUnvisitedNeighbours(node) {
-    const neighbours = [];
-    const { x, y } = node;
-    if (y > 0) neighbours.push(grid[y - 1][x]);
-    if (y < grid.length - 1) neighbours.push(grid[y + 1][x]);
-    if (x > 0) neighbours.push(grid[y][x - 1]);
-    if (x < grid[0].length - 1) neighbours.push(grid[y][x + 1]);
-    return neighbours.filter(neighbour => !neighbour.isVisited);
-  };
-
-  const getNodesInShortestPathOrder = () => {
-    const nodesInShortestPathOrder = [];
-    let currentNode = grid[finishPosition.y][finishPosition.x];
-    while (currentNode !== null) {
-      nodesInShortestPathOrder.unshift(currentNode);
-      currentNode = currentNode.previousNode;
-    };
-    return nodesInShortestPathOrder;
-  };
-
   const visualizeDijkstra = async () => {
     const visitedNodesInOrder = dijkstra();
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder();
+    const nodesInShortestPathOrder = getNodesInPathOrder(finishNode);
     await visualizeStepsOnGrid(visitedNodesInOrder, 'visited');
-    await visualizeStepsOnGrid(nodesInShortestPathOrder, 'shortestPath', .1);
+    await visualizeStepsOnGrid(nodesInShortestPathOrder, 'shortestPath', .5);
   };
 
   await visualizeDijkstra();
