@@ -3,7 +3,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import Toolbar from '../common/Toolbar';
 import Node from './components/Node';
 import DijkstraAlgorithm from './algorithms/DijkstraAlgorithm';
-import AStarAlgorithm from './algorithms/AStarAlgorithm';
+import HeuristicAlgorithms from './algorithms/HeuristicAlgorithms';
 
 const PathfinidingContainer = () => {
 
@@ -208,8 +208,10 @@ const PathfinidingContainer = () => {
         );
       break;
       case 'astar':
-        AStarAlgorithm(
+      case 'greedyBestFirst':
+        HeuristicAlgorithms(
           copyGrid(),
+          algorithmParams.type,
           gridParams.startNode,
           gridParams.finishNode,
           finish,
@@ -245,6 +247,7 @@ const PathfinidingContainer = () => {
               >
                 <option value='dijkstra'>Dijkstra's Algorithm</option>
                 <option value='astar'>A* Algorithm</option>
+                <option value='greedyBestFirst'>Greedy Best-First Search</option>
               </select>
             </div>,
             !hasStarted

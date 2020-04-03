@@ -2,8 +2,8 @@ export const getManhattanDistance = (node, targetNode) => {
   return Math.abs(targetNode.x - node.x) + Math.abs(targetNode.y - node.y);
 };
 
-export const sortNodesByDistance = array => {
-  array.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+export const sortNodesByKey = (array, key) => {
+  array.sort((nodeA, nodeB) => nodeA[key] - nodeB[key]);
 };
 
 export const sortNodesByCombinedDistance = array => {

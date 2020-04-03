@@ -1,12 +1,14 @@
 import {
   getManhattanDistance,
+  sortNodesByKey,
   sortNodesByCombinedDistance,
   getUnvisitedNeighbours,
   getNodesInPathOrder
 } from './common';
 
-const AStarAlgorithm = async (
+const HeuristicAlgorithms = async (
   grid,
+  algorithm,
   startPosition,
   finishPosition,
   finish,
@@ -16,13 +18,17 @@ const AStarAlgorithm = async (
   const finishNode = grid[finishPosition.y][finishPosition.x];
   const startNode = grid[startPosition.y][startPosition.x];
 
-  const aStar = () => {
+  const mainFunction = () => {
     const visitedNodesInOrder = [];
     const unvisitedNodes = [];
     startNode.heuristicDistance = getManhattanDistance(startNode, finishNode);
     unvisitedNodes.push(startNode);
     while (!!unvisitedNodes.length) {
-      sortNodesByCombinedDistance(unvisitedNodes);
+      switch (algorithm) {
+        case 'astar': sortNodesByCombinedDistance(unvisitedNodes); break;
+        case 'greedyBestFirst': sortNodesByKey(unvisitedNodes, 'heuristicDistance'); break;
+        default: return false;
+      };
       const currentNode = unvisitedNodes.shift();
       currentNode.isVisited = true;
       if (currentNode.type === 'wall') continue;
@@ -51,15 +57,15 @@ const AStarAlgorithm = async (
     return unvisitedNeighbours;
   };
 
-  const visualizeAStar = async () => {
-    const visitedNodesInOrder = aStar();
+  const visualizeAlgorithm = async () => {
+    const visitedNodesInOrder = mainFunction();
     const nodesInShortestPathOrder = getNodesInPathOrder(finishNode);
     await visualizeStepsOnGrid(visitedNodesInOrder, 'visited');
     await visualizeStepsOnGrid(nodesInShortestPathOrder, 'shortestPath', .5);
   };
 
-  await visualizeAStar();
+  await visualizeAlgorithm();
   finish(true);
 };
 
-export default AStarAlgorithm;
+export default HeuristicAlgorithms;

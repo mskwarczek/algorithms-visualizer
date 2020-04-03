@@ -1,5 +1,5 @@
 import {
-  sortNodesByDistance,
+  sortNodesByKey,
   getUnvisitedNeighbours,
   getNodesInPathOrder,
 } from './common'
@@ -17,7 +17,7 @@ const DijkstraAlgorithm = async (
     const visitedNodesInOrder = [];
     const unvisitedNodes = getAllNodes();
     while (!!unvisitedNodes.length) {
-      sortNodesByDistance(unvisitedNodes);
+      sortNodesByKey(unvisitedNodes, 'distance');
       const currentNode = unvisitedNodes.shift();
       if (currentNode.type === 'wall') continue;
       if (currentNode.distance === Infinity) return visitedNodesInOrder;
@@ -46,14 +46,14 @@ const DijkstraAlgorithm = async (
     });
   };
 
-  const visualizeDijkstra = async () => {
+  const visualizeAlgorithm = async () => {
     const visitedNodesInOrder = dijkstra();
     const nodesInShortestPathOrder = getNodesInPathOrder(finishNode);
     await visualizeStepsOnGrid(visitedNodesInOrder, 'visited');
     await visualizeStepsOnGrid(nodesInShortestPathOrder, 'shortestPath', .5);
   };
 
-  await visualizeDijkstra();
+  await visualizeAlgorithm();
   finish(true);
 };
 
