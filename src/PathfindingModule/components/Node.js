@@ -33,6 +33,11 @@ const Node = ({
       { type === 'start' ? <p>></p>
         : type === 'finish' ? <p>X</p>
         : null
+        // For debug:
+        // : <div style={{ fontSize: '.5em', display: 'flex', flexFlow: 'column nowrap' }}>
+        //   <p>{id.split('-')[1]}</p>
+        //   <p>{id.split('-')[2]}</p>
+        // </div>
       }
     </div>
   );

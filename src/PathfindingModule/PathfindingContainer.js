@@ -3,6 +3,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import Toolbar from '../common/Toolbar';
 import Node from './components/Node';
 import DijkstraAlgorithm from './algorithms/DijkstraAlgorithm';
+import AStarAlgorithm from './algorithms/AStarAlgorithm';
 
 const PathfinidingContainer = () => {
 
@@ -22,11 +23,12 @@ const PathfinidingContainer = () => {
   const [ algorithmParams, setAlgorithmParams ] = useState(initialAlgorithmParams);
   const [ hasStarted, start ] = useState(false);
   const [ hasFinished, finish ] = useState(false);
-  const [ isMousePressed, mousePressed ] = useState(false);
-  const [ walls, updateWalls ] = useState([]);
 
   const gridContainerRef = useRef();
   const nodesRef = useRef([]);
+
+  let tempWallArray = [];
+  let isMousePressed = false;
 
   useLayoutEffect(() => {
     if (gridContainerRef.current) {
@@ -64,6 +66,7 @@ const PathfinidingContainer = () => {
           y,
           type: null,
           distance: Infinity,
+          heuristicDistance: Infinity,
           isVisited: false,
           previousNode: null,
         });
@@ -97,23 +100,35 @@ const PathfinidingContainer = () => {
     );
   };
 
+  const copyGrid = () => {
+    const gridCopy = [];
+    grid.forEach(axisY => {
+      const axisYCopy = []
+      axisY.forEach(node => 
+        axisYCopy.push({ ...node })
+      );
+      gridCopy.push(axisYCopy);
+    });
+    return gridCopy;
+  };
+
   const paintStart = node => {
     if (!(node.x === gridParams.startNode.x && node.y === gridParams.startNode.y) &&
       !(node.x === gridParams.finishNode.x && node.y === gridParams.finishNode.y)) {
       nodesRef.current[`node-x${node.x}-y${node.y}`].classList.toggle(`node--${gridParams.paintMode}`);
-      if (walls.some(wall => wall.x === node.x && wall.y === node.y)) {
-        const filteredWalls = walls.filter(wall => !(wall.x === node.x && wall.y === node.y))
-        updateWalls(filteredWalls);
+      if (tempWallArray.some(wall => wall.x === node.x && wall.y === node.y)) {
+        const filteredWalls = tempWallArray.filter(wall => !(wall.x === node.x && wall.y === node.y))
+        tempWallArray = filteredWalls;
       } else {
-        updateWalls([ ...walls, node ]);
+        tempWallArray.push(node);
       };
     };
   };
 
   const handleMouseDown = node => {
     if (!hasStarted) {
+      isMousePressed = true;
       paintStart(node);
-      mousePressed(true);
     };
   };
 
@@ -122,9 +137,9 @@ const PathfinidingContainer = () => {
   };
 
   const handleMouseUp = () => {
-    if (walls.length > 0 && !hasStarted) {
-      const newGrid = [ ...grid ];
-      walls.forEach(wall => {
+    if (tempWallArray.length > 0 && !hasStarted) {
+      const newGrid = copyGrid();
+      tempWallArray.forEach(wall => {
         const targetNode = grid[wall.y][wall.x];
         const newWall = {
           ...targetNode,
@@ -137,16 +152,16 @@ const PathfinidingContainer = () => {
             };
         newGrid[wall.y][wall.x] = newWall;
       });
-      updateWalls([]);
+      tempWallArray = [];
       updateGrid(newGrid);
     };
-    mousePressed(false);
+    isMousePressed = false;
   };
 
   const reset = () => {
     const { axisX, axisY, startNode, finishNode } = gridParams;
-    updateWalls([]);
     generateGrid(axisX, axisY, startNode, finishNode);
+    tempWallArray = [];
     for (const node in nodesRef.current) {
       nodesRef.current[node].className = 'node';
     };
@@ -158,12 +173,26 @@ const PathfinidingContainer = () => {
 
   const runAlgorithm = () => {
     start(true);
-    DijkstraAlgorithm(
-      grid,
-      gridParams.finishNode,
-      finish,
-      visualizeStepsOnGrid,
-    );
+    switch(algorithmParams.type) {
+      case 'dijkstra':
+        DijkstraAlgorithm(
+          copyGrid(),
+          gridParams.finishNode,
+          finish,
+          visualizeStepsOnGrid,
+        );
+      break;
+      case 'astar':
+        AStarAlgorithm(
+          copyGrid(),
+          gridParams.startNode,
+          gridParams.finishNode,
+          finish,
+          visualizeStepsOnGrid,
+        );
+      break;
+      default: break;
+    };
   };
 
   const visualizeStepsOnGrid = async (source, type, speedMod = 1) => {
@@ -190,6 +219,7 @@ const PathfinidingContainer = () => {
                 disabled={hasStarted}
               >
                 <option value='dijkstra'>Dijkstra's Algorithm</option>
+                <option value='astar'>A* Algorithm</option>
               </select>
             </div>,
             !hasStarted
