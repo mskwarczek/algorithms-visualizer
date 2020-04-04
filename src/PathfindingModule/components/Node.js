@@ -7,6 +7,7 @@ const Node = ({
   forwardRef,
   mouseDown,
   mouseEnter,
+  mouseOut,
   mouseUp,
 }) => {
 
@@ -16,19 +17,14 @@ const Node = ({
     <div
       id={id}
       ref={forwardRef}
-      className={
-        type === 'start'
-          ? 'node node--start'
-          : type === 'finish'
-          ? 'node node--finish'
-          : 'node'
-      }
+      className={type ? `node node--${type}` : 'node'}
       style={{
         width: `${size}px`,
         height: `${size}px`,
       }}
       onMouseDown={() => mouseDown(node)}
       onMouseEnter={() => mouseEnter(node)}
+      onMouseOut={() => mouseOut(node)}
       onMouseUp={() => mouseUp(node)}
     >
       { type === 'start' ? <p>></p>

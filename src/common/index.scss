@@ -196,17 +196,22 @@ body {
   border-top: 1px solid royalblue;
   border-left: 1px solid royalblue;
 
+  @keyframes nodeVisited {
+    from { background-color: midnightblue }
+    to { background-color: lightskyblue }
+  };
+
+  @keyframes nodeOnShortestPath {
+    from { background-color: lightskyblue }
+    to { background-color: orangered }
+  };
+
   .node {
     border-bottom: 1px solid royalblue;
     border-right: 1px solid royalblue;
     text-align: center;
     font-weight: bold;
     user-select: none;
-  
-    &--start,
-    &--finish {
-      background-color: royalblue;
-    }
 
     &--wall {
       background-color: black;
@@ -218,10 +223,18 @@ body {
   
     &--visited {
       background-color: lightskyblue;
+      animation: nodeVisited .5s ease-out;
+    }
+
+    &--start,
+    &--finish,
+    &--drag {
+      background-color: royalblue;
     }
   
     &--shortestPath {
       background-color: orangered;
+      animation: nodeOnShortestPath .3s ease-out;
     }
   }
 }

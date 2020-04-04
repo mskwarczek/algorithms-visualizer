@@ -58,6 +58,8 @@ const PathfinidingContainer = () => {
         axisY,
         startNode,
         finishNode,
+        initialStartNode: startNode,
+        initialFinishNode: finishNode,
       });
       generateGrid(axisX, axisY, startNode, finishNode);
     };
@@ -133,21 +135,13 @@ const PathfinidingContainer = () => {
 
   // Paint operations
 
-  const paintFromSource = (source, type) => {
-    source.forEach(node => {
-      nodesRef.current[`node-x${node.x}-y${node.y}`].classList.toggle(`node--${type}`);
-    });
-  };
-
   const paintWithMouse = node => {
     if (!(node.type === 'start') && !(node.type === 'finish')) {
       nodesRef.current[`node-x${node.x}-y${node.y}`].classList.toggle(`node--${gridParams.paintMode}`);
       if (tempWallsArray.some(wall => wall.x === node.x && wall.y === node.y)) {
         const filteredWalls = tempWallsArray.filter(wall => !(wall.x === node.x && wall.y === node.y));
         tempWallsArray = filteredWalls;
-      } else {
-        tempWallsArray.push({ x: node.x, y: node.y});
-      };
+      } else tempWallsArray.push({ x: node.x, y: node.y});
     };
   };
 
@@ -155,8 +149,8 @@ const PathfinidingContainer = () => {
 
   const shiftNodes = (nodeA, nodeB) => {
     const newGrid = copyGrid();
-    const newA = { ...newGrid[nodeB.y][nodeB.x], x: nodeA.x, y: nodeA.y };
-    const newB = { ...newGrid[nodeA.y][nodeA.x], x: nodeB.x, y: nodeB.y };
+    const newA = { ...newGrid[nodeB.y][nodeB.x], x: nodeA.x, y: nodeA.y, type: null };
+    const newB = { ...newGrid[nodeA.y][nodeA.x], x: nodeB.x, y: nodeB.y};
     newGrid[nodeA.y][nodeA.x] = newA;
     newGrid[nodeB.y][nodeB.x] = newB;
     updateGrid(newGrid);
@@ -170,18 +164,10 @@ const PathfinidingContainer = () => {
     if (destinationNode !== draggedNode &&
       !(destinationNode.type === 'start' && draggedNode.type === 'finish') &&
       !(destinationNode.type === 'finish' && draggedNode.type === 'start')) {
-      wallsArray.current = [];
-      grid.forEach(axisY => {
-        axisY.forEach(node => {
-          if (node.type === 'wall') wallsArray.current.push({ x: node.x, y: node.y });
-        });
-      });
-      paintFromSource(wallsArray.current, 'wall');
       const targetNodePosition = { x: destinationNode.x, y: destinationNode.y };
       shiftNodes(draggedNode, destinationNode);
       if (draggedNode.type === 'start') setGridParams({ ...gridParams, startNode: targetNodePosition });
       if (draggedNode.type === 'finish') setGridParams({ ...gridParams, finishNode: targetNodePosition });
-      wallsArray.current = [];
     };
     draggedNode = false;
   };
@@ -198,14 +184,20 @@ const PathfinidingContainer = () => {
   };
 
   const handleMouseEnter = node => {
-    if (!hasStarted && isMousePressed && !draggedNode) paintWithMouse(node);
+    if (!hasStarted && isMousePressed) {
+      if (!draggedNode) paintWithMouse(node);
+      else nodesRef.current[`node-x${node.x}-y${node.y}`].classList.add('node--drag');
+    };
+  };
+
+  const handleMouseOut = node => {
+    if (!hasStarted && isMousePressed && draggedNode) nodesRef.current[`node-x${node.x}-y${node.y}`].classList.remove('node--drag');
   };
 
   const handleMouseUp = node => {
     if (!hasStarted) {
-      if (draggedNode) {
-        nodeDragEnd(node);
-      } else if (tempWallsArray.length > 0) {
+      if (draggedNode) nodeDragEnd(node);
+      else if (tempWallsArray.length > 0) {
         updateNodes(tempWallsArray);
         tempWallsArray = [];
       };
@@ -215,23 +207,41 @@ const PathfinidingContainer = () => {
 
   // Reset
 
-  const reset = type => {
-    const { axisX, axisY, startNode, finishNode } = gridParams;
-    for (const node in nodesRef.current) {
-      nodesRef.current[node].className = 'node';
-    };
-    nodesRef.current[`node-x${startNode.x}-y${startNode.y}`].classList.add('node--start');
-    nodesRef.current[`node-x${finishNode.x}-y${finishNode.y}`].classList.add('node--finish');
-    if (type === 'path') {
-      wallsArray.current = [];
-      grid.forEach(axisY => {
-        axisY.forEach(node => {
-          if (node.type === 'wall') wallsArray.current.push({ x: node.x, y: node.y });
-        });
+  const fillRefWithData= type => {
+    const newArray = [];
+    grid.forEach(axisY => {
+      axisY.forEach(node => {
+        if (node.type === type) newArray.push({ x: node.x, y: node.y });
       });
-      paintFromSource(wallsArray.current, 'wall');
+    });
+    return newArray;
+  };
+
+  const reset = type => {
+    const { axisX, axisY, startNode, finishNode, initialStartNode, initialFinishNode } = gridParams;
+    if (type === 'path') {
+      for (const node in nodesRef.current) {
+        const nodeId = node.split(/node-x|-y/);
+        const nodeType = grid[nodeId[2]][nodeId[1]].type;
+        if (nodeType === null) nodesRef.current[node].className = 'node';
+        if (nodeType === 'start' || nodeType === 'finish') nodesRef.current[node].className = `node node--${nodeType}`;
+        wallsArray.current = fillRefWithData('wall');
+      };
+      generateGrid(axisX, axisY, startNode, finishNode);
+    } else {
+      for (const node in nodesRef.current) {
+        const nodeId = node.split(/node-x|-y/);
+        const nodeType = grid[nodeId[2]][nodeId[1]].type;
+        if (nodeType === null || nodeType === 'wall') nodesRef.current[node].className = 'node';
+        if (nodeType === 'start' || nodeType === 'finish') nodesRef.current[node].className = `node node--${nodeType}`;
+      };
+      setGridParams({
+        ...gridParams,
+        startNode: initialStartNode,
+        finishNode: initialFinishNode
+      });
+      generateGrid(axisX, axisY, initialStartNode, initialFinishNode);
     };
-    generateGrid(axisX, axisY, startNode, finishNode);
     start(false);
     finish(false);
     wallsArray.current = [];
@@ -291,6 +301,7 @@ const PathfinidingContainer = () => {
             node={node}
             mouseDown={handleMouseDown}
             mouseEnter={handleMouseEnter}
+            mouseOut={handleMouseOut}
             mouseUp={handleMouseUp}
         />)}
       </div>
