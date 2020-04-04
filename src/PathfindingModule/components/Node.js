@@ -3,13 +3,14 @@ import React from 'react';
 const Node = ({
   id,
   size,
-  position,
-  type,
+  node,
   forwardRef,
   mouseDown,
   mouseEnter,
   mouseUp,
 }) => {
+
+  const { type } = node;
 
   return (
     <div
@@ -26,9 +27,9 @@ const Node = ({
         width: `${size}px`,
         height: `${size}px`,
       }}
-      onMouseDown={() => mouseDown(position)}
-      onMouseEnter={() => mouseEnter(position)}
-      onMouseUp={() => mouseUp(position)}
+      onMouseDown={() => mouseDown(node)}
+      onMouseEnter={() => mouseEnter(node)}
+      onMouseUp={() => mouseUp(node)}
     >
       { type === 'start' ? <p>></p>
         : type === 'finish' ? <p>X</p>

@@ -38,6 +38,7 @@ const HeuristicAlgorithms = async (
       const unvisitedNeighbours = updateUnvisitedNeighbours(currentNode);
       if (!(unvisitedNodes.includes(currentNode))) unvisitedNeighbours.forEach(neighbour => unvisitedNodes.unshift(neighbour));
     };
+    return visitedNodesInOrder;
   };
 
   const updateUnvisitedNeighbours = node => {
