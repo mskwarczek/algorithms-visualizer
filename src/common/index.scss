@@ -10,8 +10,9 @@ $color-text-light: ghostwhite;
 $color-bg: ghostwhite;
 $color-bg-dark: midnightblue;
 $color-separator: lightskyblue;
-$color-active: royalblue;
+$color-special: royalblue;
 $color-cta: orangered;
+$color-disabled: gray;
 
 $shadow: 0px 1px 3px -1px $color-separator;
 
@@ -62,7 +63,10 @@ body {
   
     &:hover {
       color: $color-cta;
-      background-color: $color-bg-dark;
+    }
+
+    &.active {
+      color: $color-cta;
     }
   }
 }
@@ -74,18 +78,18 @@ body {
           flex: .9;
 }
 
+.workspace {
+  height: 100%;
+  width: 100%;
+}
+
 .toolbar {
+  // position: relative;
   background-color: $color-bg-dark;
-  color: $color-text-light;
-  height: 20vh;
+  color: $color-text-light;;
+  width: 100%;
 
-  h2 {
-    padding-left: 2vw;
-    color: $color-cta;
-    line-height: 4vh;
-  }
-
-  &__box {
+  &__mainBox {
     display: -webkit-box;
     display: flex;
     -webkit-box-orient: horizontal;
@@ -95,17 +99,47 @@ body {
             justify-content: space-evenly;
     -webkit-box-align: center;
             align-items: center;
-    border-top: 1px solid $color-separator;
-    height: 8vh;
+    height: 100%;
+    padding: 2vh 0;
   }
 
-  &__button {
-    padding: .5vh 0.5vw;
+  &__selectBox {
+    position: relative;
+
+    & > div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 3vh 0 1vh;
+      background-color: $color-bg-dark;
+
+      & > .button {
+        padding: 1vh 0;
+    
+      }
+    }
+  }
+
+  .button {
+    padding: 0 .5vw;
     cursor: pointer;
     text-align: center;
 
     &:hover {
       color: $color-cta;
+    }
+
+    &--active {
+      color: $color-cta;
+    }
+
+    &--disabled {
+      color: $color-disabled;
+
+      &:hover {
+        color: $color-disabled;
+      }
     }
   }
 
@@ -115,8 +149,13 @@ body {
     color: $color-cta;
 
     &:hover {
-      color: $color-active;
+      color: $color-special;
     }
+  }
+
+  .label {
+    padding-top: .5vh;
+    font-size: 0.7em;
   }
 
   .checkboxContainer {
@@ -149,7 +188,7 @@ body {
   }
 
   h1 {
-    color: $color-active;
+    color: $color-special;
   }
 
   a {
@@ -158,7 +197,7 @@ body {
     font-size: 1.5em;
 
     &:hover {
-      color: $color-active;
+      color: $color-special;
     }
   }
 }
@@ -167,8 +206,6 @@ body {
 // Sorting Algorithms
 
 .sortContainer {
-  height: 80vh;
-  width: 100%;
 
   &__chart {
     display: -webkit-box;
@@ -191,8 +228,6 @@ body {
 // Pathfinding algorithms
 
 .gridContainer {
-  width: 100%;
-  height: 80vh;
   border-top: 1px solid royalblue;
   border-left: 1px solid royalblue;
 

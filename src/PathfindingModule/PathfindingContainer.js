@@ -10,8 +10,9 @@ const PathfinidingContainer = () => {
   // Initial state
 
   const initialAlgorithmParams = {
-    type: 'dijkstra',
+    type: 'Dijkstra\'s Algorithm',
     interval: 5,
+    speed: 'fast',
   };
 
   const initialGridParams = {
@@ -252,7 +253,7 @@ const PathfinidingContainer = () => {
   const runAlgorithm = () => {
     start(true);
     switch(algorithmParams.type) {
-      case 'dijkstra':
+      case 'Dijkstra\'s Algorithm':
         DijkstraAlgorithm(
           copyGrid(),
           gridParams.finishNode,
@@ -260,8 +261,8 @@ const PathfinidingContainer = () => {
           visualizeStepsOnGrid,
         );
       break;
-      case 'astar':
-      case 'greedyBestFirst':
+      case 'A* Algorithm':
+      case 'Greedy Best-First Search':
         HeuristicAlgorithms(
           copyGrid(),
           algorithmParams.type,
@@ -310,61 +311,85 @@ const PathfinidingContainer = () => {
 
   return (
     <div className='moduleContainer'>
-      <Toolbar
-        title='Sorting Algorithms'
-        box_1={
-          [
-            <div>
-              <label>Algorithm: </label>
-              <select
-                value={algorithmParams.type}
-                onChange={event => setAlgorithmParams({ ...algorithmParams, type: event.target.value })}
-                disabled={hasStarted}
-              >
-                <option value='dijkstra'>Dijkstra's Algorithm</option>
-                <option value='astar'>A* Algorithm</option>
-                <option value='greedyBestFirst'>Greedy Best-First Search</option>
-              </select>
-            </div>,
+      <Toolbar>
+        <div
+          id='pathfinding__algorithm'
+          type='select'
+          button={<p>Algorithm:</p>}
+          active={algorithmParams.type}
+          disabled={hasStarted}>
+          <div
+            className={algorithmParams.type === 'Dijkstra\'s Algorithm' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setAlgorithmParams({ ...algorithmParams, type: 'Dijkstra\'s Algorithm'}) : null}>
+            <p>Dijkstra's Algorithm</p>
+          </div>
+          <div
+            className={algorithmParams.type === 'A* Algorithm' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setAlgorithmParams({ ...algorithmParams, type: 'A* Algorithm'}) : null}>
+            <p>A* Algorithm</p>
+          </div>
+          <div
+            className={algorithmParams.type === 'Greedy Best-First Search' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setAlgorithmParams({ ...algorithmParams, type: 'Greedy Best-First Search'}) : null}>
+            <p>Greedy Best-First Search</p>
+          </div>
+        </div>
+        <div
+          id='pathfinding__speed'
+          type='select'
+          button={<p>Speed:</p>}
+          active={algorithmParams.speed}
+          disabled={hasStarted}>
+          <div
+            className={algorithmParams.interval === 200 ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setAlgorithmParams({ ...algorithmParams, interval: 200, speed:'slow'}) : null}>
+            <p>Slow</p>
+          </div>
+          <div
+            className={algorithmParams.interval === 25 ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setAlgorithmParams({ ...algorithmParams, interval: 25, speed: 'average'}) : null}>
+            <p>Average</p>
+          </div>
+          <div
+            className={algorithmParams.interval === 5 ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setAlgorithmParams({ ...algorithmParams, interval: 5, speed: 'fast'}) : null}>
+            <p>Fast</p>
+          </div>
+        </div>
+        <div
+          id='pathfinding__start'
+          type='button'
+          button={
             !hasStarted
-              ? <p onClick={runAlgorithm} className='callToAction'>Run!</p>
+              ? <p onClick={runAlgorithm}>Run!</p>
               : !hasFinished
-              ? <p onClick={() => window.location.reload()} style={{ fontSize: '1.5em' }}>Break</p>
-              : <p onClick={reset} style={{ fontSize: '1.5em' }}>Reset</p>,
-            <div>
-              <label>Speed: </label>
-              <select
-                value={algorithmParams.interval}
-                onChange={event => setAlgorithmParams({ ...algorithmParams, interval: event.target.value })}
-                disabled={hasStarted}
-              >
-                <option value={200}>Slow</option>
-                <option value={25}>Average</option>
-                <option value={5}>Fast</option>
-              </select>
-            </div>,
-          ]
-        }
-        box_2={
-          [
-            <div>
-              <label>Paint mode: </label>
-              <select
-                value={gridParams.paintMode}
-                onChange={event => setGridParams({ ...gridParams, paintMode: event.target.value })}
-                disabled={hasStarted}
-              >
-                <option value='wall'>Walls</option>
-              </select>
-            </div>,
-            hasFinished && <p onClick={() => reset('path')}>Reset path</p>,
-          ]
-        }
-      />
+              ? <p onClick={() => window.location.reload()}>Break</p>
+              : <p onClick={reset}>Reset</p>}
+          buttonclass={!hasStarted || hasFinished ? 'callToAction' : undefined}
+        />
+        <div
+          id='pathfinding__paint'
+          type='select'
+          button={<p>Paint mode:</p>}
+          active={`${gridParams.paintMode}s`}
+          disabled={hasStarted}>
+          <div
+            className={gridParams.paintMode === 'wall' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setGridParams({ ...gridParams, paintMode: 'wall'}) : null}>
+            <p>Walls</p>
+          </div>
+        </div>
+        <div
+          id='pathfinding__resetPath'
+          type='button'
+          button={<p onClick={hasFinished ? () => reset('path') : null}>Reset path</p>}
+          buttonclass={hasFinished ? 'callToAction' : undefined}
+          disabled={!hasFinished}
+        />
+      </Toolbar>
       <div
-        className='gridContainer'
-        ref={gridContainerRef}
-      >
+        className='workspace gridContainer'
+        ref={gridContainerRef}>
         {grid && grid.length > 0 && displayGrid()}
       </div>
     </div>

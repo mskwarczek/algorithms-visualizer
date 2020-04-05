@@ -25,8 +25,8 @@ const HeuristicAlgorithms = async (
     unvisitedNodes.push(startNode);
     while (!!unvisitedNodes.length) {
       switch (algorithm) {
-        case 'astar': sortNodesByCombinedDistance(unvisitedNodes); break;
-        case 'greedyBestFirst': sortNodesByKey(unvisitedNodes, 'heuristicDistance'); break;
+        case 'A* Algorithm': sortNodesByCombinedDistance(unvisitedNodes); break;
+        case 'Greedy Best-First Search': sortNodesByKey(unvisitedNodes, 'heuristicDistance'); break;
         default: return false;
       };
       const currentNode = unvisitedNodes.shift();

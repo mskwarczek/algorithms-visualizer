@@ -119,7 +119,7 @@ const QuickSort = ({
   };
 
   return (
-    <div className='sortContainer'>
+    <div className='workspace sortContainer'>
       <Chart
         data={data}
         dataParams={dataParams}

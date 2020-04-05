@@ -1,31 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Toolbar = ({ title, box_1, box_2 }) => {
+const Toolbar = ({ children }) => {
+
+  const [ activeChild, setActiveChild ] = useState(null);
+
+  const expandBox = id => {
+    activeChild === id
+      ? setActiveChild(null)
+      : setActiveChild(id);
+  };
 
   return (
     <div className='toolbar'>
-      <h2>{title}</h2>
-      <div className='toolbar__box'>
-        {box_1.map((elem, index) => 
-          <div
-            key={`1_${index}`}
-            className='toolbar__button'
-          >
-            {elem}
-          </div>
-        )}
-      </div>
-      { box_2 && box_2.length > 0 && !box_2.every(elem => elem === false) &&
-        <div className='toolbar__box'>
-          {box_2.map((elem, index) => 
-            <div
-              key={`2_${index}`}
-              className='toolbar__button'
-            >
-              {elem}
+      <div className='toolbar__mainBox'>
+        {children.map(element => {
+        const { id, type, button, active, buttonclass, disabled } = element.props;
+        return (
+          <div key={id}
+            onClick={type !== 'button' && !disabled ? () => expandBox(id) : null}
+            style={{
+              width: `${100 / children.length}%`,
+            }}>
+            <div className={!disabled ? `button ${buttonclass}` : `button button--disabled ${buttonclass}`}>
+              {button}
+              {type === 'select' &&
+                <p className='label'>{active}</p>}
             </div>
-          )}
-        </div> }
+            {id === activeChild && !disabled && type === 'select' &&
+              <div
+                className='toolbar__selectBox'
+                onClick={() => setActiveChild(null)}>
+                {element}
+              </div>}
+          </div>
+      )})}
+      </div>
     </div>
   );
 };
