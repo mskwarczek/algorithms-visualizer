@@ -13,9 +13,10 @@ const SortContainer = () => {
     max: 100,
   };
   const initialSortParams = {
-    type: 'quickSort',
+    type: 'Quick Sort',
     interval: 5,
-  }
+    speed: 'fast',
+  };
   const initialDisplayParams = {
     chartMargins: true,
     dataMargins: 'true', // 'true', 'false', 'true disabled', 'false disabled'
@@ -77,7 +78,7 @@ const SortContainer = () => {
 
   const renderChart = () => {
     switch(sortParams.type) {
-      case 'selectionSort':
+      case 'Selection Sort':
         return <SelectionSort
           data={data}
           updateData={updateData}
@@ -88,7 +89,7 @@ const SortContainer = () => {
           hasFinished={hasFinished}
           finish={finish}
         />
-      case 'bubbleSort':
+      case 'Bubble Sort':
         return <BubbleSort
           data={data}
           updateData={updateData}
@@ -99,7 +100,7 @@ const SortContainer = () => {
           hasFinished={hasFinished}
           finish={finish}
         />
-      case 'quickSort':
+      case 'Quick Sort':
         return <QuickSort
           data={data}
           updateData={updateData}
@@ -113,113 +114,130 @@ const SortContainer = () => {
     };
   };
 
-  const resetSettings = () => {
-    updateData([]);
-    setDataParams(initialDataParams);
-    setSortParams(initialSortParams);
-    setDisplayParams(initialDisplayParams);
-    start(false);
-    finish(false);
-  };
-
   return (
     <div className='moduleContainer'>
-      <Toolbar
-        title='Sorting Algorithms'
-        box_1={
-          [
-            <p onClick={!hasStarted ? generateData : null}>Generate new data</p>,
+      <Toolbar>
+        <div
+          id='sort_algorithm'
+          type='select'
+          button={<p>Algorithm:</p>}
+          active={sortParams.type}
+          disabled={hasStarted}>
+          <div
+            className={sortParams.type === 'Selection Sort' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setSortParams({ ...sortParams, type: 'Selection Sort'}) : null}>
+            <p>Selection Sort</p>
+          </div>
+          <div
+            className={sortParams.type === 'Bubble Sort' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setSortParams({ ...sortParams, type: 'Bubble Sort'}) : null}>
+            <p>Bubble Sort</p>
+          </div>
+          <div
+            className={sortParams.type === 'Quick Sort' ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setSortParams({ ...sortParams, type: 'Quick Sort'}) : null}>
+            <p>Quick Sort</p>
+          </div>
+        </div>
+        <div
+          id='sort__speed'
+          type='select'
+          button={<p>Speed:</p>}
+          active={sortParams.speed}
+          disabled={hasStarted}>
+          <div
+            className={sortParams.interval === 200 ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setSortParams({ ...sortParams, interval: 200, speed: 'slow'}) : null}>
+            <p>Slow</p>
+          </div>
+          <div
+            className={sortParams.interval === 25 ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setSortParams({ ...sortParams, interval: 25, speed: 'average'}) : null}>
+            <p>Average</p>
+          </div>
+          <div
+            className={sortParams.interval === 5 ? 'button button--active' : 'button'}
+            onClick={!hasStarted ? () => setSortParams({ ...sortParams, interval: 5, speed: 'fast'}) : null}>
+            <p>Fast</p>
+          </div>
+        </div>
+        <div
+          id='sort__start'
+          type='button'
+          button={
             !hasStarted
-              ? <p onClick={runAlgorithm} className='callToAction'>Sort!</p>
-              : <p onClick={() => window.location.reload()} style={{ fontSize: '1.5em' }}>Break</p>,
-            <div>
-              <label>Algorithm: </label>
-              <select
-                value={sortParams.type}
-                onChange={event => setSortParams({ ...sortParams, type: event.target.value })}
-                disabled={hasStarted}
-              >
-                <option value='selectionSort'>Selection sort</option>
-                <option value="bubbleSort">Bubble sort</option>
-                <option value="quickSort">Quick sort</option>
-              </select>
-            </div>,
-          ]
-        }
-        box_2={
-          [
-            <div>
-              <label>Array size: {dataParams.size}</label><br/>
-              <input
-                type='range'
-                max={1000}
-                min={2}
-                step={1}
-                value={dataParams.size}
-                onChange={event => setDataParams({ ...dataParams, size: parseInt(event.target.value) })}
-                disabled={hasStarted}
-              />
-            </div>,
-            <div>
-              <label>Values min range: {dataParams.min}</label><br/>
-              <input
-                type='range'
-                min={-100}
-                max={dataParams.max}
-                step={1}
-                value={dataParams.min}
-                onChange={event => setDataParams({ ...dataParams, min: parseInt(event.target.value) })}
-                disabled={hasStarted}
-              />
-            </div>,
-            <div>
-              <label>Values max range: {dataParams.max}</label><br/>
-              <input
-                type='range'
-                min={dataParams.min}
-                max={100}
-                step={1}
-                value={dataParams.max}
-                onChange={event => setDataParams({ ...dataParams, max: parseInt(event.target.value) })}
-                disabled={hasStarted}
-              />
-            </div>,
-            <div>
-              <label>Step interval (ms): {sortParams.interval}</label><br/>
-              <input
-                type='range'
-                max={1000}
-                min={5}
-                step={5}
-                value={sortParams.interval}
-                onChange={event => setSortParams({ ...sortParams, interval: parseInt(event.target.value) })}
-                disabled={hasStarted}
-              />
-            </div>,
-            <div className='checkboxContainer'>
-              <label>Labels:&nbsp;</label>
-              <input
-                type='checkbox'
-                name={'dataLabels'}
-                checked={displayParams.dataLabels === 'true'}
-                onChange={event => setDisplayParams({ ...displayParams, dataLabels: event.target.checked ? 'true' : 'false' })}
-                disabled={displayParams.dataLabels.includes('disabled')}
-              />
-            </div>,
-            <div className='checkboxContainer'>
-              <label>Margins:&nbsp;</label>
-              <input
-                type='checkbox'
-                name={'dataMargins'}
-                checked={displayParams.dataMargins === 'true'}
-                onChange={event => setDisplayParams({ ...displayParams, dataMargins: event.target.checked ? 'true' : 'false' })}
-                disabled={displayParams.dataMargins.includes('disabled')}
-              />
-            </div>,
-            <p onClick={!hasStarted ? resetSettings : null}>Reset</p>,
-          ]
-        }
-      >
+              ? <p onClick={runAlgorithm}>Sort!</p>
+              : <p onClick={() => window.location.reload()}>Break</p>}
+          buttonclass={!hasStarted ? 'callToAction' : undefined}
+        />
+        <div
+          id='sort__newData'
+          type='button'
+          button={<p onClick={!hasStarted ? generateData : null}>Generate new data</p>}
+          disabled={hasStarted}
+        />
+        <div
+          id='sort__options'
+          type='options'
+          button={<p>More options</p>}
+          disabled={hasStarted}>
+          <div>
+            <label>Values min range: {dataParams.min}</label><br/>
+            <input
+              type='range'
+              min={-100}
+              max={dataParams.max}
+              step={1}
+              value={dataParams.min}
+              onChange={event => setDataParams({ ...dataParams, min: parseInt(event.target.value) })}
+              disabled={hasStarted}
+            />
+          </div>
+          <div>
+            <label>Values max range: {dataParams.max}</label><br/>
+            <input
+              type='range'
+              min={dataParams.min}
+              max={100}
+              step={1}
+              value={dataParams.max}
+              onChange={event => setDataParams({ ...dataParams, max: parseInt(event.target.value) })}
+              disabled={hasStarted}
+            />
+          </div>
+          <div>
+            <label>Array size: {dataParams.size}</label><br/>
+            <input
+              type='range'
+              max={1000}
+              min={2}
+              step={1}
+              value={dataParams.size}
+              onChange={event => setDataParams({ ...dataParams, size: parseInt(event.target.value) })}
+              disabled={hasStarted}
+            />
+          </div>
+          <div className='checkboxContainer'>
+            <label>Labels:&nbsp;</label>
+            <input
+              type='checkbox'
+              name={'dataLabels'}
+              checked={displayParams.dataLabels === 'true'}
+              onChange={event => setDisplayParams({ ...displayParams, dataLabels: event.target.checked ? 'true' : 'false' })}
+              disabled={displayParams.dataLabels.includes('disabled')}
+            />
+          </div>
+          <div className='checkboxContainer'>
+            <label>Margins:&nbsp;</label>
+            <input
+              type='checkbox'
+              name={'dataMargins'}
+              checked={displayParams.dataMargins === 'true'}
+              onChange={event => setDisplayParams({ ...displayParams, dataMargins: event.target.checked ? 'true' : 'false' })}
+              disabled={displayParams.dataMargins.includes('disabled')}
+            />
+          </div>
+        </div>
       </Toolbar>
       {renderChart()}
     </div>

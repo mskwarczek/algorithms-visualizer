@@ -12,29 +12,35 @@ const Toolbar = ({ children }) => {
 
   return (
     <div className='toolbar'>
-      <div className='toolbar__mainBox'>
-        {children.map(element => {
-        const { id, type, button, active, buttonclass, disabled } = element.props;
-        return (
-          <div key={id}
-            onClick={type !== 'button' && !disabled ? () => expandBox(id) : null}
-            style={{
-              width: `${100 / children.length}%`,
-            }}>
-            <div className={!disabled ? `button ${buttonclass}` : `button button--disabled ${buttonclass}`}>
-              {button}
-              {type === 'select' &&
-                <p className='label'>{active}</p>}
-            </div>
-            {id === activeChild && !disabled && type === 'select' &&
+      {children.map(element => {
+      const { id, type, button, active, buttonclass, disabled } = element.props;
+      return (
+        <div
+          key={id}
+          style={{
+            width: `${100 / children.length}%`,
+          }}>
+          <div
+            className={!disabled ? `button ${buttonclass}` : `button button--disabled ${buttonclass}`}
+            onClick={type !== 'button' && !disabled ? () => expandBox(id) : null}>
+            {button}
+            {type === 'select' &&
+              <p className='label'>{active}</p>}
+          </div>
+          {id === activeChild && !disabled && type === 'select'  &&
+            <div
+              className='toolbar__selectBox'
+              onClick={() => setActiveChild(null)}>
+              {element}
+            </div>}
+            {id === activeChild && !disabled && type === 'options' &&
               <div
-                className='toolbar__selectBox'
-                onClick={() => setActiveChild(null)}>
+                key={id}
+                className='toolbar__optionsBox'>
                 {element}
               </div>}
-          </div>
-      )})}
-      </div>
+        </div>
+    )})}
     </div>
   );
 };

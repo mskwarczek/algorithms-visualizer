@@ -84,25 +84,21 @@ body {
 }
 
 .toolbar {
-  // position: relative;
+  position: relative;
   background-color: $color-bg-dark;
   color: $color-text-light;;
   width: 100%;
-
-  &__mainBox {
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-            flex-flow: row nowrap;
-    -webkit-box-pack: space-evenly;
-            justify-content: space-evenly;
-    -webkit-box-align: center;
-            align-items: center;
-    height: 100%;
-    padding: 2vh 0;
-  }
-
+  padding: 2vh 0;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-flow: row nowrap;
+  -webkit-box-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+          align-items: center;
+          
   &__selectBox {
     position: relative;
 
@@ -116,7 +112,32 @@ body {
 
       & > .button {
         padding: 1vh 0;
-    
+      }
+    }
+  }
+
+  &__optionsBox {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 2vh 0;
+    background-color: $color-bg-dark;
+
+    & > div {
+      display: -webkit-box;
+      display: flex;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+              flex-flow: row wrap;
+      -webkit-box-pack: space-evenly;
+              justify-content: space-evenly;
+
+      & > div {
+        -webkit-box-flex: 1;
+                flex: 1;
+        text-align: center;
+        white-space: nowrap;
       }
     }
   }
@@ -166,6 +187,8 @@ body {
             flex-flow: row nowrap;
     -webkit-box-align: center;
             align-items: center;
+    -webkit-box-pack: center;
+            justify-content: center;
   }
 }
 
@@ -231,9 +254,19 @@ body {
   border-top: 1px solid royalblue;
   border-left: 1px solid royalblue;
 
+  @-webkit-keyframes nodeVisited {
+    from { background-color: midnightblue }
+    to { background-color: lightskyblue }
+  }
+
   @keyframes nodeVisited {
     from { background-color: midnightblue }
     to { background-color: lightskyblue }
+  };
+
+  @-webkit-keyframes nodeOnShortestPath {
+    from { background-color: lightskyblue }
+    to { background-color: orangered }
   };
 
   @keyframes nodeOnShortestPath {
@@ -246,7 +279,10 @@ body {
     border-right: 1px solid royalblue;
     text-align: center;
     font-weight: bold;
-    user-select: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 
     &--wall {
       background-color: black;
@@ -258,7 +294,8 @@ body {
   
     &--visited {
       background-color: lightskyblue;
-      animation: nodeVisited .5s ease-out;
+      -webkit-animation: nodeVisited .5s ease-out;
+              animation: nodeVisited .5s ease-out;
     }
 
     &--start,
@@ -269,7 +306,8 @@ body {
   
     &--shortestPath {
       background-color: orangered;
-      animation: nodeOnShortestPath .3s ease-out;
+      -webkit-animation: nodeOnShortestPath .3s ease-out;
+              animation: nodeOnShortestPath .3s ease-out;
     }
   }
 }
