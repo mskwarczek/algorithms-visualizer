@@ -292,7 +292,7 @@ const PathfinidingContainer = () => {
     return grid.map((axisY, idx) => 
       <div
         key={idx}
-        style={{ display: 'flex', flexFlow: 'row nowrap' }}>
+        className='grid'>
         {axisY.map(node => 
           <Node
             key={`${node.x}-${node.y}`}

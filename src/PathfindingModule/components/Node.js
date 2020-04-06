@@ -12,6 +12,10 @@ const Node = ({
 }) => {
 
   const { type } = node;
+  const iconStyle = {
+    fontSize: `${size * .9}px`,
+    lineHeight: `${size}px`,
+  };
 
   return (
     <div
@@ -27,8 +31,8 @@ const Node = ({
       onMouseOut={() => mouseOut(node)}
       onMouseUp={() => mouseUp(node)}
     >
-      { type === 'start' ? <p>></p>
-        : type === 'finish' ? <p>X</p>
+      { type === 'start' ? <p style={iconStyle}><i className='fas fa-street-view'></i></p>
+        : type === 'finish' ? <p style={iconStyle}><i className='fas fa-map-marker-alt'></i></p>
         : null
         // For debug:
         // : <div style={{ fontSize: '.5em', display: 'flex', flexFlow: 'column nowrap' }}>
