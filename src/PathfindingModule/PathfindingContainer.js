@@ -2,8 +2,9 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 
 import Toolbar from '../common/Toolbar';
 import Node from './components/Node';
-import DijkstraAlgorithm from './algorithms/DijkstraAlgorithm';
-import HeuristicAlgorithms from './algorithms/HeuristicAlgorithms';
+import DijkstraAlgorithm from './pathfinding/DijkstraAlgorithm';
+import HeuristicAlgorithms from './pathfinding/HeuristicAlgorithms';
+import RecursiveDivisionMaze from './mazes/RecursiveDivisionMaze';
 
 const PathfinidingContainer = () => {
 
@@ -276,6 +277,17 @@ const PathfinidingContainer = () => {
     };
   };
 
+  const generateMaze = async () => {
+    const newMaze = await RecursiveDivisionMaze(
+      copyGrid(),
+      gridParams.startNode,
+      gridParams.finishNode,
+      // finish,
+      visualizeStepsOnGrid,
+    );
+    updateNodes(newMaze, { type: 'wall' });
+  };
+
   const visualizeStepsOnGrid = async (source, type, speedMod = 1) => {
     for (let i = 0; i < source.length; i++) {
       const currentNode = source[i];
@@ -385,6 +397,12 @@ const PathfinidingContainer = () => {
           button={<p onClick={hasFinished ? () => reset('path') : null}>Reset path</p>}
           buttonclass={hasFinished ? 'callToAction' : undefined}
           disabled={!hasFinished}
+        />
+        <div
+          id='pathfinding__generateMaze'
+          type='button'
+          button={<p onClick={!hasStarted ? generateMaze : null}>Draw maze</p>}
+          disabled={hasStarted}
         />
       </Toolbar>
       <div
