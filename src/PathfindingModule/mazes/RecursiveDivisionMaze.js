@@ -2,7 +2,6 @@ const RecursiveDivisionMaze = async (
   grid,
   startPosition,
   finishPosition,
-  // finish,
   visualizeStepsOnGrid,
 ) => {
 
@@ -73,7 +72,7 @@ const RecursiveDivisionMaze = async (
   };
 
   const wallsArray = await divideChamber(grid, [])
-  await visualizeStepsOnGrid(wallsArray, 'wall')
+  await visualizeStepsOnGrid(wallsArray, 'wall', 2)
   return wallsArray;
 };
 

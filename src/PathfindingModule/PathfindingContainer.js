@@ -2,9 +2,9 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 
 import Toolbar from '../common/Toolbar';
 import Node from './components/Node';
-import DijkstraAlgorithm from './pathfinding/DijkstraAlgorithm';
-import HeuristicAlgorithms from './pathfinding/HeuristicAlgorithms';
-import RecursiveDivisionMaze from './mazes/RecursiveDivisionMaze';
+import dijkstraAlgorithm from './pathfinding/dijkstraAlgorithm';
+import heuristicAlgorithms from './pathfinding/heuristicAlgorithms';
+import recursiveDivisionMaze from './mazes/recursiveDivisionMaze';
 
 const PathfinidingContainer = () => {
 
@@ -230,6 +230,11 @@ const PathfinidingContainer = () => {
         wallsArray.current = fillRefWithData('wall');
       };
       generateGrid(axisX, axisY, startNode, finishNode);
+    } else if (type === 'walls') {
+      // wallsArray.current = fillRefWithData('wall');
+      // updateNodes(wallsArray.current, { type: 'null' });
+      // wallsArray.current = [];
+      generateGrid(axisX, axisY, startNode, finishNode);
     } else {
       for (const node in nodesRef.current) {
         const nodeId = node.split(/node-x|-y/);
@@ -240,7 +245,7 @@ const PathfinidingContainer = () => {
       setGridParams({
         ...gridParams,
         startNode: initialStartNode,
-        finishNode: initialFinishNode
+        finishNode: initialFinishNode,
       });
       generateGrid(axisX, axisY, initialStartNode, initialFinishNode);
     };
@@ -253,9 +258,9 @@ const PathfinidingContainer = () => {
 
   const runAlgorithm = () => {
     start(true);
-    switch(algorithmParams.type) {
+    switch (algorithmParams.type) {
       case 'Dijkstra\'s Algorithm':
-        DijkstraAlgorithm(
+        dijkstraAlgorithm(
           copyGrid(),
           gridParams.finishNode,
           finish,
@@ -264,7 +269,7 @@ const PathfinidingContainer = () => {
       break;
       case 'A* Algorithm':
       case 'Greedy Best-First Search':
-        HeuristicAlgorithms(
+        heuristicAlgorithms(
           copyGrid(),
           algorithmParams.type,
           gridParams.startNode,
@@ -277,15 +282,26 @@ const PathfinidingContainer = () => {
     };
   };
 
-  const generateMaze = async () => {
-    const newMaze = await RecursiveDivisionMaze(
-      copyGrid(),
-      gridParams.startNode,
-      gridParams.finishNode,
-      // finish,
-      visualizeStepsOnGrid,
-    );
-    updateNodes(newMaze, { type: 'wall' });
+  const generateMaze = async type => {
+    const { axisX, axisY, startNode, finishNode } = gridParams;
+    let newMaze = [];
+    reset('walls');
+    start(true);
+    switch (type) {
+      case 'Recursive Division Algorithm':
+        newMaze = await recursiveDivisionMaze(
+          copyGrid(),
+          gridParams.startNode,
+          gridParams.finishNode,
+          visualizeStepsOnGrid,
+        );
+        break;
+      default: break;
+    };
+    wallsArray.current = newMaze;
+    generateGrid(axisX, axisY, startNode, finishNode);
+    wallsArray.current = [];
+    start(false);
   };
 
   const visualizeStepsOnGrid = async (source, type, speedMod = 1) => {
@@ -320,6 +336,9 @@ const PathfinidingContainer = () => {
       </div>
     );
   };
+
+  console.log('render');
+  console.log(grid);
 
   return (
     <div className='moduleContainer'>
@@ -369,11 +388,23 @@ const PathfinidingContainer = () => {
           </div>
         </div>
         <div
+          id='pathfinding__generateMaze'
+          type='select'
+          button={<p>Generate maze</p>}
+          active={''}
+          disabled={hasStarted}>
+          <div
+            className={'button'}
+            onClick={!hasStarted ? () => generateMaze('Recursive Division Algorithm') : null}>
+            <p>Recursive Division Algorithm</p>
+          </div>
+        </div>
+        <div
           id='pathfinding__start'
           type='button'
           button={
             !hasStarted
-              ? <p onClick={runAlgorithm}>Run!</p>
+              ? <p onClick={runAlgorithm}>Find path</p>
               : !hasFinished
               ? <p onClick={() => window.location.reload()}>Break</p>
               : <p onClick={reset}>Reset</p>}
@@ -392,17 +423,16 @@ const PathfinidingContainer = () => {
           </div>
         </div>
         <div
-          id='pathfinding__resetPath'
+          id='pathfinding__resetElements'
           type='button'
-          button={<p onClick={hasFinished ? () => reset('path') : null}>Reset path</p>}
+          button={
+            !hasStarted && !hasFinished
+              ? <p onClick={() => reset('walls')}>Reset walls</p>
+              : hasFinished
+              ? <p  onClick={() => reset('path')}>Reset path</p>
+              : <p>Reset walls</p>}
           buttonclass={hasFinished ? 'callToAction' : undefined}
-          disabled={!hasFinished}
-        />
-        <div
-          id='pathfinding__generateMaze'
-          type='button'
-          button={<p onClick={!hasStarted ? generateMaze : null}>Draw maze</p>}
-          disabled={hasStarted}
+          disabled={(hasStarted && !hasFinished)}
         />
       </Toolbar>
       <div

@@ -4,7 +4,7 @@ import {
   getNodesInPathOrder,
 } from './common'
 
-const DijkstraAlgorithm = async (
+const dijkstraAlgorithm = async (
   grid,
   finishPosition,
   finish,
@@ -57,4 +57,4 @@ const DijkstraAlgorithm = async (
   finish(true);
 };
 
-export default DijkstraAlgorithm;
+export default dijkstraAlgorithm;
