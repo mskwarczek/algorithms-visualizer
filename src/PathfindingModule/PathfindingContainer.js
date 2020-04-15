@@ -2,9 +2,9 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 
 import Toolbar from '../common/Toolbar';
 import Node from './components/Node';
-import dijkstraAlgorithm from './pathfinding/dijkstraAlgorithm';
-import heuristicAlgorithms from './pathfinding/heuristicAlgorithms';
-import recursiveDivisionMaze from './mazes/recursiveDivisionMaze';
+import DijkstraAlgorithm from './pathfinding/DijkstraAlgorithm';
+import HeuristicAlgorithms from './pathfinding/HeuristicAlgorithms';
+import RecursiveDivisionMaze from './mazes/RecursiveDivisionMaze';
 
 const PathfinidingContainer = () => {
 
@@ -260,7 +260,7 @@ const PathfinidingContainer = () => {
     start(true);
     switch (algorithmParams.type) {
       case 'Dijkstra\'s Algorithm':
-        dijkstraAlgorithm(
+        DijkstraAlgorithm(
           copyGrid(),
           gridParams.finishNode,
           finish,
@@ -269,7 +269,7 @@ const PathfinidingContainer = () => {
       break;
       case 'A* Algorithm':
       case 'Greedy Best-First Search':
-        heuristicAlgorithms(
+        HeuristicAlgorithms(
           copyGrid(),
           algorithmParams.type,
           gridParams.startNode,
@@ -289,7 +289,7 @@ const PathfinidingContainer = () => {
     start(true);
     switch (type) {
       case 'Recursive Division Algorithm':
-        newMaze = await recursiveDivisionMaze(
+        newMaze = await RecursiveDivisionMaze(
           copyGrid(),
           gridParams.startNode,
           gridParams.finishNode,

@@ -1,4 +1,4 @@
-const recursiveDivisionMaze = async (
+const RecursiveDivisionMaze = async (
   grid,
   startPosition,
   finishPosition,
@@ -60,4 +60,4 @@ const recursiveDivisionMaze = async (
   return walls;
 };
 
-export default recursiveDivisionMaze;
+export default RecursiveDivisionMaze;

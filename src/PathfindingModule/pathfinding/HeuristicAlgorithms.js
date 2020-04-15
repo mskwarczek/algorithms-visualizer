@@ -6,7 +6,7 @@ import {
   getNodesInPathOrder
 } from './common';
 
-const heuristicAlgorithms = async (
+const HeuristicAlgorithms = async (
   grid,
   algorithm,
   startPosition,
@@ -69,4 +69,4 @@ const heuristicAlgorithms = async (
   finish(true);
 };
 
-export default heuristicAlgorithms;
+export default HeuristicAlgorithms;
