@@ -12,16 +12,17 @@ const HomePage = () => {
           You may already check out visualizations of a few sorting and pathfinding algorithms :)<br/>
         </p>
         <div>
-          <Link to='/sort'>Sorting Algorithms</Link>
-          <p>See visualizations of selection, bubble and quick sort.<br/>
-            Modify size of data and visualization speed.
+          <Link to='/pathfinding'>Pathfinding and Maze Generation Algorithms</Link>
+          <p>
+            See visualizations of most common pathfinding algorithms.<br/>
+            Algorithmically generate mazes.<br/>
+            Paint walls, move start and finish points and see how algorithms work in different situations.
           </p>
         </div>
         <div>
-          <Link to='/pathfinding'>Pathfinding Algorithms</Link>
-          <p>
-            See visualizations of most common pathfinding algorithms.<br/>
-            Paint walls, move start and finish points and see how algorithms work in different situations.
+          <Link to='/sort'>Sorting Algorithms</Link>
+          <p>See visualizations of selection, bubble and quick sort.<br/>
+            Modify size of data and visualization speed.
           </p>
         </div>
       </div>

@@ -18,14 +18,14 @@ const Router = () => {
           Algorithms Visualizer
         </Link>
         <Link
+          to='/pathfinding'
+          className={location.pathname === '/pathfinding' ? 'active' : undefined}>
+          Pathfinding and Maze Generation Algorithms
+        </Link>
+        <Link
           to='/sort'
           className={location.pathname === '/sort' ? 'active' : undefined}>
           Sorting Algorithms
-        </Link>
-        <Link
-          to='/pathfinding'
-          className={location.pathname === '/pathfinding' ? 'active' : undefined}>
-          Pathfinding Algorithms
         </Link>
       </div>
       <Switch >

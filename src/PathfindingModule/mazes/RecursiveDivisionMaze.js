@@ -1,79 +1,63 @@
-const RecursiveDivisionMaze = async (
+const recursiveDivisionMaze = async (
   grid,
   startPosition,
   finishPosition,
   visualizeStepsOnGrid,
 ) => {
 
-  let gates = [];
-
-  const divideChamber = async (grid, wallsArray) => {
+  const divideChamber = async (grid, walls) => {
     if (grid.length <= 2 || grid[0].length <= 2) return [];
+    let line, chamber1, chamber2, newArray1, newArray2 = [];
+    let pivot, gateIdx = null;
     if (grid.length > grid[0].length) {
-      let { lineX, pivotY } = generateHozirontalLine(grid);
-      let { newLine, gateIdx } = openGate(lineX);
-      lineX = newLine;
-      gates.push(grid[pivotY - 1][gateIdx]);
-      gates.push(grid[pivotY + 1][gateIdx]);
-      const topChamber = grid.filter((array, idx) => idx < pivotY);
-      const bottomChamber = grid.filter((array, idx) => idx > pivotY);
-      const newArray1 = await divideChamber(topChamber, wallsArray);
-      const newArray2 = await divideChamber(bottomChamber, wallsArray);
-      wallsArray = wallsArray.concat(lineX, newArray1, newArray2);
-      return wallsArray;
+      pivot = Math.floor(Math.random() * ((grid.length - 1) - 1) + 1);
+      line = generateLine(grid, pivot, 'horizontal');
+      gateIdx = openGate(line);
+      gates.push(grid[pivot - 1][gateIdx]);
+      gates.push(grid[pivot + 1][gateIdx]);
+      chamber1 = grid.filter((_, idx) => idx < pivot);
+      chamber2 = grid.filter((_, idx) => idx > pivot);
     } else {
-      let { lineY, pivotX } = generateVerticallLine(grid);
-      let { newLine, gateIdx } = openGate(lineY);
-      lineY = newLine;
-      gates.push(grid[gateIdx][pivotX - 1]);
-      gates.push(grid[gateIdx][pivotX + 1]);
-      const leftChamber = grid.map(array => array.filter((node, idx) => idx < pivotX));
-      const rightChamber = grid.map(array => array.filter((node, idx) => idx > pivotX));
-      const newArray1 = await divideChamber(leftChamber, wallsArray);
-      const newArray2 = await divideChamber(rightChamber, wallsArray);
-      wallsArray = wallsArray.concat(lineY, newArray1, newArray2);
-      return wallsArray;
+      pivot = Math.floor(Math.random() * ((grid[0].length - 1) - 1) + 1);
+      line = generateLine(grid, pivot, 'vertical');
+      gateIdx = openGate(line);
+      gates.push(grid[gateIdx][pivot - 1]);
+      gates.push(grid[gateIdx][pivot + 1]);
+      chamber1 = grid.map(array => array.filter((_, idx) => idx < pivot));
+      chamber2 = grid.map(array => array.filter((_, idx) => idx > pivot));
     };
+    line = line.filter((_, idx) => idx !== gateIdx);
+    newArray1 = await divideChamber(chamber1, walls);
+    newArray2 = await divideChamber(chamber2, walls);
+    walls = walls.concat(line, newArray1, newArray2);
+    return walls;
   };
 
-  const generateHozirontalLine = grid => {
-    const pivotY = Math.floor(Math.random() * ((grid.length - 1) - 1) + 1);
-    const lineX = [];
-    grid[pivotY].forEach((node, idx) => {
+  const generateLine = (grid, pivot, orientation) => {
+    const line = [];
+    const initialLine = orientation === 'vertical' ? grid : grid[pivot];
+    initialLine.forEach(element => {
+      const node = orientation === 'vertical' ? element[pivot] : element;
       if (!(
         (node.x === startPosition.x && node.y === startPosition.y) ||
         (node.x === finishPosition.x && node.y === finishPosition.y) ||
         (gates.some(gate => gate.x === node.x && gate.y === node.y))
-      )) lineX.push(node);
+      )) line.push(node);
     });
-    return { lineX, pivotY };
-  };
-
-  const generateVerticallLine = grid => {
-    const pivotX = Math.floor(Math.random() * ((grid[0].length - 1) - 1) + 1);
-    const lineY = [];
-    grid.forEach((array, idx) => {
-      const node = array[pivotX];
-      if (!(
-        (node.x === startPosition.x && node.y === startPosition.y) ||
-        (node.x === finishPosition.x && node.y === finishPosition.y) ||
-        (gates.some(gate => gate.x === node.x && gate.y === node.y))
-      )) lineY.push(node);
-    });
-    return { lineY, pivotX };
+    return line;
   };
 
   const openGate = line => {
     const gateIdx = Math.floor(Math.random() * (line.length));
-    const newGate = line.filter((node, idx) => idx === gateIdx)[0];
-    const newLine = line.filter((node, idx) => idx !== gateIdx);
+    const newGate = line.filter((_, idx) => idx === gateIdx)[0];
     gates.push(newGate);
-    return { gateIdx, newLine };
+    return gateIdx;
   };
 
-  const wallsArray = await divideChamber(grid, [])
-  await visualizeStepsOnGrid(wallsArray, 'wall', 2)
-  return wallsArray;
+  let gates = [];
+  const walls = await divideChamber(grid, []);
+  await visualizeStepsOnGrid(walls, 'wall', 2);
+  return walls;
 };
 
-export default RecursiveDivisionMaze;
+export default recursiveDivisionMaze;
