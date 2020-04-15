@@ -5,6 +5,7 @@ import Node from './components/Node';
 import DijkstraAlgorithm from './pathfinding/DijkstraAlgorithm';
 import HeuristicAlgorithms from './pathfinding/HeuristicAlgorithms';
 import RecursiveDivisionMaze from './mazes/RecursiveDivisionMaze';
+import PrimsAlgorithmMaze from './mazes/PrimsAlgorithmMaze';
 
 const PathfinidingContainer = () => {
 
@@ -231,9 +232,6 @@ const PathfinidingContainer = () => {
       };
       generateGrid(axisX, axisY, startNode, finishNode);
     } else if (type === 'walls') {
-      // wallsArray.current = fillRefWithData('wall');
-      // updateNodes(wallsArray.current, { type: 'null' });
-      // wallsArray.current = [];
       generateGrid(axisX, axisY, startNode, finishNode);
     } else {
       for (const node in nodesRef.current) {
@@ -296,6 +294,14 @@ const PathfinidingContainer = () => {
           visualizeStepsOnGrid,
         );
         break;
+      case 'Prim\'s Algorithm':
+        newMaze = await PrimsAlgorithmMaze(
+          copyGrid(),
+          gridParams.startNode,
+          gridParams.finishNode,
+          visualizeStepsOnGrid,
+        );
+        break;
       default: break;
     };
     wallsArray.current = newMaze;
@@ -304,13 +310,16 @@ const PathfinidingContainer = () => {
     start(false);
   };
 
-  const visualizeStepsOnGrid = async (source, type, speedMod = 1) => {
+  const visualizeStepsOnGrid = async (source, type, speedMod = 1, reverse) => {
     for (let i = 0; i < source.length; i++) {
       const currentNode = source[i];
-      nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.add('node--active');
-      await new Promise(resolve => setTimeout(resolve, algorithmParams.interval / speedMod));
-      nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.remove('node--active');
-      nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.add(`node--${type}`);
+      if (speedMod < 100) {
+        nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.add('node--active');
+        await new Promise(resolve => setTimeout(resolve, algorithmParams.interval / speedMod));
+        nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.remove('node--active');
+      };
+      if (!reverse) nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.add(`node--${type}`)
+      else nodesRef.current[`node-x${currentNode.x}-y${currentNode.y}`].classList.remove(`node--${type}`);
     };
   };
 
@@ -336,9 +345,6 @@ const PathfinidingContainer = () => {
       </div>
     );
   };
-
-  console.log('render');
-  console.log(grid);
 
   return (
     <div className='moduleContainer'>
@@ -397,6 +403,11 @@ const PathfinidingContainer = () => {
             className={'button'}
             onClick={!hasStarted ? () => generateMaze('Recursive Division Algorithm') : null}>
             <p>Recursive Division Algorithm</p>
+          </div>
+          <div
+            className={'button'}
+            onClick={!hasStarted ? () => generateMaze('Prim\'s Algorithm') : null}>
+            <p>Prim's Algorithm</p>
           </div>
         </div>
         <div
