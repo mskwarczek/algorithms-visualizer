@@ -6,6 +6,7 @@ import DijkstraAlgorithm from './pathfinding/DijkstraAlgorithm';
 import HeuristicAlgorithms from './pathfinding/HeuristicAlgorithms';
 import RecursiveDivisionMaze from './mazes/RecursiveDivisionMaze';
 import PrimsAlgorithmMaze from './mazes/PrimsAlgorithmMaze';
+import RecursiveBacktrackerMaze from './mazes/RecursiveBacktrackerMaze';
 
 const PathfinidingContainer = () => {
 
@@ -302,6 +303,14 @@ const PathfinidingContainer = () => {
           visualizeStepsOnGrid,
         );
         break;
+      case 'Recursive Backtracker Algorithm':
+        newMaze = await RecursiveBacktrackerMaze(
+          copyGrid(),
+          gridParams.startNode,
+          gridParams.finishNode,
+          visualizeStepsOnGrid,
+        );
+        break;
       default: break;
     };
     wallsArray.current = newMaze;
@@ -408,6 +417,11 @@ const PathfinidingContainer = () => {
             className={'button'}
             onClick={!hasStarted ? () => generateMaze('Prim\'s Algorithm') : null}>
             <p>Prim's Algorithm</p>
+          </div>
+          <div
+            className={'button'}
+            onClick={!hasStarted ? () => generateMaze('Recursive Backtracker Algorithm') : null}>
+            <p>Recursive Backtracker Algorithm</p>
           </div>
         </div>
         <div

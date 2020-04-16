@@ -14,7 +14,7 @@ const PrimsAlgorithmMaze = async (
     let cells = [];
     walls = addNewCell(grid[startPosition.y][startPosition.x], false, possibleCells, cells, walls);
     while (walls.length > 0) {
-      const wallIdx = Math.floor(Math.random() * (walls.length - 1));
+      const wallIdx = Math.floor(Math.random() * walls.length);
       const wall = walls[wallIdx];
       if (wall.x <= 0 || wall.x >= grid[0].length - 1 || wall.y <= 0 || wall.y >= grid.length - 1) {
         walls = walls.filter(elem => !(elem.x === wall.x && elem.y === wall.y));
